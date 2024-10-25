@@ -1,7 +1,7 @@
 <div align="center">
   <img width="142" height="142" src="https://download.next-hat.com/ressources/images/logo.png" >
-  <h3>Develop, Distribute</h3>
-  <p align="center">
+  <h3>Develop, Deploy.</h3>
+  <p align="center">c
     <a href="https://next-hat.com/nanocl" target="_blank"><b>Docs</b></a> •
     <a href="https://github.com/next-hat/nanocl/tree/nightly/examples" target="_blank"><b>Examples</b></a> •
     <a href="https://discord.gg/WV4Aac8uZg" target="_blank"><b>Discord</b></a>
@@ -61,14 +61,14 @@ To learn more about **Nanocl**, you can take a look at the following resources:
 There is an example used to deploy our [documentation][documentation]:
 
 ```yaml
-ApiVersion: v0.14
+ApiVersion: v0.15
 
 # See all options:
 # https://docs.next-hat.com/references/nanocl/objects/cargo
 Cargoes:
 - Name: doc
   Container:
-    Image: ghcr.io/next-hat/documentation:0.14.0
+    Image: ghcr.io/next-hat/documentation:0.15.0
 
 # See all options:
 # https://docs.next-hat.com/references/nanocl/objects/resource
@@ -159,6 +159,17 @@ You can also help us by contributing to the project, by reporting bugs, by sugge
 <table>
   <tr>
   <td align="center">
+    <a href="https://github.com/mamaicode">
+      <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/102310764?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="mamaicode" />
+      <br />
+      <sub>
+        <b>
+          mamaicode
+        </b>
+      </sub>
+    </a>
+  </td>
+  <td align="center">
     <a href="https://github.com/xf10w">
       <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/43791027?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="xf10w" />
       <br />
@@ -172,6 +183,9 @@ You can also help us by contributing to the project, by reporting bugs, by sugge
   </tr>
 </table>
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=next-hat/nanocl&type=Date)](https://star-history.com/#next-hat/nanocl&Date)
 
 [contributing_guide]: ./CONTRIBUTING.md
 [documentation]: https://docs.next-hat.com
