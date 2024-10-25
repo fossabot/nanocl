@@ -54,7 +54,18 @@ async fn create_init_container(
     .unwrap_or(cargo.spec.container.image.clone().unwrap());
   let host_config = init_container.host_config.unwrap_or_default();
   init_container.image = Some(image.clone());
+  let secret_dir = utils::secret::create_tls_secrets(
+    &cargo.spec.cargo_key,
+    &ProcessKind::Cargo,
+    &cargo.spec.secrets,
+    state,
+  )
+  .await?;
+  // Add the secret directory to the bind mounts
+  let mut binds = host_config.binds.unwrap_or_default();
+  binds.push(format!("{}:/opt/nanocl.io/secrets", secret_dir));
   init_container.host_config = Some(HostConfig {
+    binds: Some(binds),
     network_mode: Some(
       host_config.network_mode.unwrap_or("nanoclbr0".to_owned()),
     ),
@@ -160,11 +171,19 @@ pub async fn create(
   .await?;
   let env_secrets =
     utils::secret::load_env_secrets(&cargo.spec.secrets, state).await?;
+  let secret_dir = utils::secret::create_tls_secrets(
+    &cargo.spec.cargo_key,
+    &ProcessKind::Cargo,
+    &cargo.spec.secrets,
+    state,
+  )
+  .await?;
   let instances = (0..number)
     .collect::<Vec<usize>>()
     .into_iter()
     .map(move |current| {
       let env_secrets = env_secrets.clone();
+      let secret_dir = secret_dir.clone();
       async move {
         let ordinal_index = if current > 0 {
           current.to_string()
@@ -207,6 +226,9 @@ pub async fn create(
           None => format!("{}{}", ordinal_index, cargo.spec.name),
           Some(hostname) => format!("{}{}", ordinal_index, hostname),
         };
+        // mount the secret directory to the container
+        let mut binds = host_config.binds.clone().unwrap_or_default();
+        binds.push(format!("{}:/opt/nanocl.io/secrets", secret_dir));
         let new_process = bollard_next::container::Config {
           attach_stderr: Some(true),
           attach_stdout: Some(true),
@@ -217,6 +239,7 @@ pub async fn create(
           host_config: Some(HostConfig {
             restart_policy,
             network_mode: Some("nanoclbr0".to_owned()),
+            binds: Some(binds),
             ..host_config
           }),
           ..container

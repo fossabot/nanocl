@@ -31,6 +31,13 @@ async fn create_instance(
   container.labels = Some(labels);
   let env_secrets =
     utils::secret::load_env_secrets(&job.secrets, state).await?;
+  let secret_dir = utils::secret::create_tls_secrets(
+    &job.name,
+    &ProcessKind::Job,
+    &job.secrets,
+    state,
+  )
+  .await?;
   container.env = Some(
     container
       .env
@@ -40,10 +47,13 @@ async fn create_instance(
       .collect(),
   );
   let host_config = container.host_config.unwrap_or_default();
+  let mut binds = host_config.binds.clone().unwrap_or_default();
+  binds.push(format!("{}/:/opt/nanocl.io/secrets", secret_dir));
   container.host_config = Some(HostConfig {
     network_mode: Some(
       host_config.network_mode.unwrap_or("nanoclbr0".to_owned()),
     ),
+    binds: Some(binds),
     ..host_config
   });
   let short_id = utils::key::generate_short_id(6);
