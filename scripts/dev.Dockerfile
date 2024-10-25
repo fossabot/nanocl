@@ -1,5 +1,5 @@
 # Create Builder image
-FROM --platform=$BUILDPLATFORM rust:1.78.0-alpine3.20
+FROM --platform=$BUILDPLATFORM rust:1.82.0-alpine3.20
 
 RUN apk add --update \
   gcc \
@@ -26,6 +26,7 @@ RUN apk add --update alpine-sdk \
   util-linux \
   bash \
   cloud-utils \
+  curl \
   cdrkit
 
 # Create project directory
