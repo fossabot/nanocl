@@ -1,9 +1,6 @@
 use std::{cell::RefCell, io, rc::Rc, time::Instant};
 
-use bollard_next::container::AttachContainerOptions;
 use futures::{future::ready, StreamExt};
-use nanocl_error::http::HttpError;
-use nanocl_stubs::{generic::GenericNspQuery, process::OutputLog};
 use ntex::{
   chain,
   channel::{mpsc, oneshot},
@@ -13,6 +10,10 @@ use ntex::{
   web, ws, Service,
 };
 use tokio::io::AsyncWriteExt;
+
+use bollard_next::container::AttachContainerOptions;
+use nanocl_error::http::HttpError;
+use nanocl_stubs::{generic::GenericNspQuery, process::OutputLog};
 
 use crate::{
   models::{SystemState, WsConState},
