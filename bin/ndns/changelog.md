@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Update
 
-- Update chore image to alpine:3.20.2
+- Update chore image to alpine:3.20.0
 
 ## [2.90.0-n0.7] - 2024-06-11
 
