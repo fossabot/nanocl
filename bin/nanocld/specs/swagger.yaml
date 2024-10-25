@@ -36,7 +36,7 @@ paths:
     head:
       tags:
       - System
-      summary: Get version information
+      summary: Ping the server to check if it is up
       operationId: get_ping
       responses:
         '202':
@@ -381,7 +381,7 @@ paths:
     get:
       tags:
       - Events
-      summary: Count events
+      summary: Count events with optional filter
       operationId: count_event
       parameters:
       - name: filter
@@ -503,7 +503,7 @@ paths:
     get:
       tags:
       - Jobs
-      summary: List jobs
+      summary: List jobs with optional filter
       operationId: list_job
       parameters:
       - name: filter
@@ -526,7 +526,7 @@ paths:
     post:
       tags:
       - Jobs
-      summary: Create a job
+      summary: Create a new job
       operationId: create_job
       requestBody:
         content:
@@ -567,7 +567,7 @@ paths:
     delete:
       tags:
       - Jobs
-      summary: Delete a job
+      summary: Delete a job by name
       operationId: delete_job
       parameters:
       - name: name
@@ -585,7 +585,7 @@ paths:
     get:
       tags:
       - Jobs
-      summary: Inspect a job
+      summary: Get detailed information about a job
       operationId: inspect_job
       parameters:
       - name: name
@@ -605,7 +605,7 @@ paths:
     get:
       tags:
       - Metrics
-      summary: Get metrics of all peer nodes
+      summary: List metrics with optional filter
       operationId: list_metric
       parameters:
       - name: filter
@@ -647,7 +647,7 @@ paths:
     get:
       tags:
       - Metrics
-      summary: Count metrics
+      summary: Count metrics with optional filter
       operationId: count_metric
       parameters:
       - name: filter
@@ -689,7 +689,7 @@ paths:
     get:
       tags:
       - Namespaces
-      summary: List namespaces
+      summary: List namespaces with optional filter
       operationId: list_namespace
       parameters:
       - name: filter
@@ -712,7 +712,7 @@ paths:
     post:
       tags:
       - Namespaces
-      summary: Create a namespace
+      summary: Create a new namespace
       operationId: create_namespace
       requestBody:
         content:
@@ -866,7 +866,7 @@ paths:
     get:
       tags:
       - Processes
-      summary: List all processes (Vm, Job, Cargo)
+      summary: List processes with optional filter
       operationId: list_processes
       parameters:
       - name: filter
@@ -912,7 +912,7 @@ paths:
     post:
       tags:
       - Processes
-      summary: Send a signal to processes of given kind and name
+      summary: Send a signal to all processes of given kind and name (cargo, job, vm)
       operationId: kill_processes
       parameters:
       - name: kind
@@ -949,7 +949,7 @@ paths:
     get:
       tags:
       - Processes
-      summary: Get logs of processes for all instances of given kind and name (cargo, job, vm)
+      summary: Get logs of processes of given kind and name (cargo, job, vm)
       operationId: logs_processes
       parameters:
       - name: kind
@@ -1017,7 +1017,7 @@ paths:
     post:
       tags:
       - Processes
-      summary: Restart processes of given kind and name
+      summary: Restart all processes of given kind and name (cargo, job, vm)
       operationId: restart_processes
       parameters:
       - name: kind
@@ -1048,7 +1048,7 @@ paths:
     post:
       tags:
       - Processes
-      summary: Start processes of given kind and name
+      summary: Start all processes of given kind and name (cargo, job, vm)
       operationId: start_processes
       parameters:
       - name: kind
@@ -1079,7 +1079,7 @@ paths:
     get:
       tags:
       - Processes
-      summary: Get stats of a cargo instance
+      summary: Get stats of all processes of given kind and name (cargo, job, vm)
       operationId: stats_processes
       parameters:
       - name: kind
@@ -1130,7 +1130,7 @@ paths:
     post:
       tags:
       - Processes
-      summary: Stop a processes of given kind and name
+      summary: Stop all processes of given kind and name (cargo, job, vm)
       operationId: stop_processes
       parameters:
       - name: kind
@@ -1161,7 +1161,7 @@ paths:
     get:
       tags:
       - Processes
-      summary: Wait for a job to finish
+      summary: Wait for a all processes to reach a specific state
       operationId: wait_processes
       parameters:
       - name: name
@@ -1229,6 +1229,23 @@ paths:
       responses:
         '200':
           description: Process instances logs
+  /processes/{pk}/start:
+    post:
+      tags:
+      - Processes
+      summary: Start a single process by it's name or id
+      operationId: start_process_by_pk
+      parameters:
+      - name: pk
+        in: path
+        description: Pk of the process
+        required: true
+        schema:
+          type: string
+        example: '1234567890'
+      responses:
+        '202':
+          description: Process instances started
   /resource/kinds:
     get:
       tags:
@@ -1321,7 +1338,7 @@ paths:
     get:
       tags:
       - ResourceKinds
-      summary: Inspect a resource kind
+      summary: Get detailed information about a resource kind
       operationId: inspect_resource_kind
       parameters:
       - name: domain
@@ -1373,7 +1390,7 @@ paths:
     get:
       tags:
       - Resources
-      summary: List resources
+      summary: List resources with optional filter
       operationId: list_resource
       parameters:
       - name: filter
@@ -1396,7 +1413,7 @@ paths:
     post:
       tags:
       - Resources
-      summary: Create a resource
+      summary: Create a new resource
       operationId: create_resource
       requestBody:
         content:
@@ -1468,7 +1485,7 @@ paths:
     delete:
       tags:
       - Resources
-      summary: Delete a resource
+      summary: Delete a resource by name
       operationId: delete_resource
       parameters:
       - name: name
@@ -1576,7 +1593,7 @@ paths:
     get:
       tags:
       - Secrets
-      summary: List secret
+      summary: List secret with optional filter
       operationId: list_secret
       parameters:
       - name: filter
@@ -1599,7 +1616,7 @@ paths:
     post:
       tags:
       - Secrets
-      summary: Create a secret
+      summary: Create a new secret
       operationId: create_secret
       requestBody:
         content:
@@ -1738,7 +1755,7 @@ paths:
     get:
       tags:
       - Vms
-      summary: List virtual machines
+      summary: List virtual machines with optional filter
       operationId: list_vm
       parameters:
       - name: filter
@@ -1795,7 +1812,7 @@ paths:
     get:
       tags:
       - VmImages
-      summary: List virtual machine images
+      summary: List virtual machine images with optional filter
       operationId: list_vm_images
       parameters:
       - name: filter
@@ -1947,7 +1964,7 @@ paths:
     delete:
       tags:
       - Vms
-      summary: Delete a virtual machine
+      summary: Delete a virtual machine by name
       operationId: delete_vm
       parameters:
       - name: name
@@ -1958,7 +1975,7 @@ paths:
           type: string
       - name: namespace
         in: query
-        description: The namespace of the virtual machine
+        description: The namespace of the virtual machine default to global namespace
         required: false
         schema:
           type: string
@@ -2060,7 +2077,7 @@ paths:
     get:
       tags:
       - Vms
-      summary: Inspect a virtual machine
+      summary: Get detailed information about a virtual machine
       operationId: inspect_vm
       parameters:
       - name: name
