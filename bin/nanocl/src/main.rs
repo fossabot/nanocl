@@ -737,4 +737,40 @@ mod tests {
     assert_cli_ok!("event", "ls", "--limit", "2", "--offset", "1");
     assert_cli_ok!("event", "ls", "-q", "--limit", "2", "--offset", "1");
   }
+
+  #[ntex::test]
+  async fn secret() {
+    assert_cli_ok!("secret", "ls");
+    assert_cli_ok!("secret", "ls", "-q");
+    assert_cli_err!("secret", "create", "test-cli", "tls");
+    assert_cli_ok!(
+      "secret",
+      "create",
+      "test-cli",
+      "tls",
+      "--certificate",
+      "yoloh",
+      "--certificate-key",
+      "yoloh",
+      "--certificate-client",
+      "yoloh"
+    );
+    assert_cli_ok!("secret", "ls");
+    assert_cli_ok!("secret", "ls", "-q");
+    assert_cli_ok!("secret", "rm", "-y", "test-cli");
+    assert_cli_ok!(
+      "secret",
+      "create",
+      "test-cli",
+      "tls",
+      "--certificate-path",
+      "../../tests/server.crt",
+      "--certificate-key-path",
+      "../../tests/server.key",
+      "--certificate-client-path",
+      "../../tests/ca.key"
+    );
+    assert_cli_ok!("secret", "inspect", "test-cli");
+    assert_cli_ok!("secret", "rm", "-y", "test-cli");
+  }
 }

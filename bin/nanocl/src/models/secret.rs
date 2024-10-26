@@ -45,14 +45,28 @@ pub struct EnvCreateOpts {
 pub struct TlsCreateOpts {
   /// Certificate
   #[clap(long)]
-  pub certificate: String,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub certificate: Option<String>,
+  /// Certificate path to read from a file
+  #[clap(long)]
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub certificate_path: Option<String>,
   /// Certificate key
   #[clap(long)]
-  pub certificate_key: String,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub certificate_key: Option<String>,
+  /// Certificate key path to read from a file
+  #[clap(long)]
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub certificate_key_path: Option<String>,
   /// Client certificate
   #[clap(long)]
   #[serde(skip_serializing_if = "Option::is_none")]
   pub certificate_client: Option<String>,
+  /// Client certificate path to read from a file
+  #[clap(long)]
+  #[serde(skip_serializing_if = "Option::is_none")]
+  pub certificate_client_path: Option<String>,
   /// DHParam
   #[clap(long)]
   #[serde(skip_serializing_if = "Option::is_none")]
@@ -77,6 +91,7 @@ pub struct ContainerRegistryCreateOpts {
 
 impl TryFrom<SecretCreateOpts> for SecretPartial {
   type Error = IoError;
+
   fn try_from(opts: SecretCreateOpts) -> Result<Self, Self::Error> {
     let (kind, data) = match &opts.kind {
       SecretKindCreateCommand::Env(env) => {
@@ -86,22 +101,29 @@ impl TryFrom<SecretCreateOpts> for SecretPartial {
         let mut cert = tls.certificate.clone();
         let mut cert_key = tls.certificate_key.clone();
         let mut cert_client = tls.certificate_client.clone();
-        if std::path::Path::new(&cert).exists() {
-          cert = std::fs::read_to_string(&cert)?;
+        if cert.is_none() && tls.certificate_path.is_none() {
+          return Err(IoError::interrupted("Certificate", "is required"));
         }
-        if std::path::Path::new(&cert_key).exists() {
-          cert_key = std::fs::read_to_string(&cert_key)?;
+        if cert_key.is_none() && tls.certificate_key_path.is_none() {
+          return Err(IoError::interrupted("Certificate key", "is required"));
         }
-        if let Some(ca) = &cert_client {
-          if std::path::Path::new(ca).exists() {
-            cert_client = Some(std::fs::read_to_string(ca)?);
-          }
+        if let Some(certificate_path) = &tls.certificate_path {
+          cert = Some(std::fs::read_to_string(certificate_path)?);
+        }
+        if let Some(certificate_key_path) = &tls.certificate_key_path {
+          cert_key = Some(std::fs::read_to_string(certificate_key_path)?);
+        }
+        if let Some(certificate_client_path) = &tls.certificate_client_path {
+          cert_client = Some(std::fs::read_to_string(certificate_client_path)?);
         }
         let tls = TlsCreateOpts {
           certificate: cert,
           certificate_key: cert_key,
           certificate_client: cert_client,
-          ..tls.to_owned()
+          certificate_path: None,
+          certificate_key_path: None,
+          certificate_client_path: None,
+          ..tls.clone()
         };
         ("nanocl.io/tls", serde_json::to_value(tls)?)
       }
