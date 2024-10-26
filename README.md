@@ -1,7 +1,7 @@
 <div align="center">
   <img width="142" height="142" src="https://download.next-hat.com/ressources/images/logo.png" >
   <h3>Develop, Deploy.</h3>
-  <p align="center">c
+  <p align="center">
     <a href="https://next-hat.com/nanocl" target="_blank"><b>Docs</b></a> •
     <a href="https://github.com/next-hat/nanocl/tree/nightly/examples" target="_blank"><b>Examples</b></a> •
     <a href="https://discord.gg/WV4Aac8uZg" target="_blank"><b>Discord</b></a>
