@@ -891,7 +891,7 @@ paths:
       tags:
       - Processes
       summary: Count processes
-      operationId: count_process
+      operationId: count_processes
       parameters:
       - name: filter
         in: query
@@ -1175,6 +1175,26 @@ paths:
           description: Job wait
         '404':
           description: Job does not exist
+  /processes/{name}/inspect:
+    get:
+      tags:
+      - Processes
+      summary: Get detailed information about a process by it's name
+      operationId: inspect_process
+      parameters:
+      - name: name
+        in: path
+        description: Name of the process
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cargo details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Process'
   /processes/{name}/logs:
     get:
       tags:
