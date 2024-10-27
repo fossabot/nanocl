@@ -315,7 +315,8 @@ impl Modify for VersionModifier {
     process::kill_processes,
     process::wait_processes,
     process::stats_processes,
-    process::count_process,
+    process::count_processes,
+    process::inspect_process,
     process::start_process_by_pk,
     // Event
     event::list_event,
