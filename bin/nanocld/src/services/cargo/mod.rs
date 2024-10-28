@@ -34,6 +34,10 @@ pub fn ntex_config(config: &mut web::ServiceConfig) {
 
 #[cfg(test)]
 mod tests {
+  use futures::{StreamExt, TryStreamExt};
+  use nanocl_stubs::system::{
+    EventActorKind, EventCondition, EventKind, NativeEventAction,
+  };
   use ntex::http;
 
   use nanocl_stubs::cargo::{
@@ -221,6 +225,74 @@ mod tests {
         "basic cargo delete"
       );
     }
+    // test init container
+    let res = client
+      .send_post(
+        ENDPOINT,
+        Some(&CargoSpecPartial {
+          name: "init-test-cargo".to_owned(),
+          init_container: Some(bollard_next::container::Config {
+            image: Some("alpine:latest".to_owned()),
+            cmd: Some(vec!["echo".to_owned(), "hello".to_owned()]),
+            ..Default::default()
+          }),
+          container: bollard_next::container::Config {
+            image: Some(
+              "ghcr.io/next-hat/nanocl-get-started:latest".to_owned(),
+            ),
+            ..Default::default()
+          },
+          ..Default::default()
+        }),
+        None::<String>,
+      )
+      .await;
+    test_status_code!(
+      res.status(),
+      http::StatusCode::CREATED,
+      "init cargo create"
+    );
+    let cargo = TestClient::res_json::<Cargo>(res).await;
+    assert_eq!(cargo.spec.name, "init-test-cargo", "Invalid cargo name");
+    let res = client
+      .send_post(
+        "/processes/cargo/init-test-cargo/start",
+        None::<String>,
+        None::<String>,
+      )
+      .await;
+    assert_eq!(res.status(), http::StatusCode::ACCEPTED, "init cargo start");
+    let res = client
+      .send_post(
+        "/events/watch",
+        Some(vec![EventCondition {
+          actor_key: Some("init-test-cargo.global".to_owned()),
+          actor_kind: Some(EventActorKind::Cargo),
+          related_key: None,
+          related_kind: None,
+          kind: vec![EventKind::Normal],
+          action: vec![NativeEventAction::Start],
+        }]),
+        None::<String>,
+      )
+      .await;
+    assert_eq!(res.status(), http::StatusCode::OK, "init cargo watch");
+    let mut stream = res.into_stream();
+    while let Some(_chunk) = stream.next().await {}
+    let res = client
+      .send_delete(
+        &format!("{ENDPOINT}/init-test-cargo"),
+        Some(CargoDeleteQuery {
+          force: Some(true),
+          ..Default::default()
+        }),
+      )
+      .await;
+    assert_eq!(
+      res.status(),
+      http::StatusCode::ACCEPTED,
+      "init cargo delete"
+    );
     ntex::time::sleep(std::time::Duration::from_secs(1)).await;
     system.state.wait_event_loop().await;
   }
