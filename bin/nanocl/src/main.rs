@@ -89,8 +89,9 @@ async fn execute_arg(cli_args: &Cli) -> IoResult<()> {
     Command::State(args) => commands::exec_state(&cli_conf, args).await,
     Command::Version => commands::exec_version(&cli_conf).await,
     Command::Vm(args) => commands::exec_vm(&cli_conf, args).await,
-    Command::Ps(args) => commands::exec_process(&cli_conf, args).await,
     Command::Logs(args) => commands::logs_process(&cli_conf, args).await,
+    Command::Inspect(args) => commands::inspect_process(&cli_conf, args).await,
+    Command::Ps(args) => commands::exec_process(&cli_conf, args).await,
     Command::Install(args) => {
       #[cfg(not(target_os = "windows"))]
       {
@@ -821,5 +822,10 @@ mod tests {
   async fn logs() {
     assert_cli_ok!("logs", "nstore.system.c");
     assert_cli_ok!("logs", "nstore.system.c", "-s", "0");
+  }
+
+  #[ntex::test]
+  async fn inspect() {
+    assert_cli_ok!("inspect", "nstore.system.c");
   }
 }

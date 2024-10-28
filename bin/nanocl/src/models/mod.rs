@@ -115,10 +115,12 @@ pub enum Command {
   Event(EventArg),
   /// Show processes
   Ps(GenericListOpts<ProcessFilter>),
-  /// Show nanocl host information
-  Info,
   /// Get logs of a process
   Logs(LogsOpts),
+  /// Inspect a process
+  Inspect(GenericInspectOpts),
+  /// Show nanocl host information
+  Info,
   /// Show nanocl version information
   Version,
   /// Install components
