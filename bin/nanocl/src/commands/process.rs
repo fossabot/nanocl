@@ -3,11 +3,18 @@ use nanocld_client::stubs::process::{Process, ProcessLogQuery};
 
 use crate::{
   config::CliConfig,
-  models::{GenericListOpts, LogsOpts, ProcessArg, ProcessFilter, ProcessRow},
+  models::{
+    GenericInspectOpts, GenericListOpts, LogsOpts, ProcessArg, ProcessFilter,
+    ProcessRow,
+  },
   utils,
 };
 
-use super::{GenericCommand, GenericCommandLs};
+use super::{GenericCommand, GenericCommandInspect, GenericCommandLs};
+
+impl GenericCommandInspect for ProcessArg {
+  type ApiItem = Process;
+}
 
 impl GenericCommand for ProcessArg {
   fn object_name() -> &'static str {
@@ -36,6 +43,15 @@ pub async fn logs_process(
     .logs_process(&opts.name, Some(&query))
     .await?;
   utils::print::logs_process_stream(stream).await?;
+  Ok(())
+}
+
+/// Inspect a process by it's name
+pub async fn inspect_process(
+  cli_conf: &CliConfig,
+  opts: &GenericInspectOpts,
+) -> IoResult<()> {
+  ProcessArg::exec_inspect(cli_conf, opts, None).await?;
   Ok(())
 }
 

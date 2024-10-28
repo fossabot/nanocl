@@ -26,6 +26,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let res = client.list_process(None).await;
   /// ```
+  ///
   pub async fn list_process(
     &self,
     query: Option<&GenericFilter>,
@@ -37,6 +38,7 @@ impl NanocldClient {
 
   /// Get Log of a single process by it's name or id
   /// Cargoes, jobs, can have multiple instances, this endpoint get logs of a single instance
+  ///
   pub async fn logs_process(
     &self,
     name: &str,
@@ -50,6 +52,7 @@ impl NanocldClient {
 
   /// Get logs of processes for a specific object
   /// Cargoes, jobs, can have multiple instances, this endpoint get logs all instances
+  ///
   pub async fn logs_processes(
     &self,
     kind: &str,
@@ -72,6 +75,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let res = client.start_process("cargo", "my-cargo", None).await;
   /// ```
+  ///
   pub async fn start_process(
     &self,
     kind: &str,
@@ -98,6 +102,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let res = client.restart_process("cargo", "my-cargo", None).await;
   /// ```
+  ///
   pub async fn restart_process(
     &self,
     kind: &str,
@@ -124,6 +129,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let res = client.stop_cargo("my-cargo", None).await;
   /// ```
+  ///
   pub async fn stop_process(
     &self,
     kind: &str,
@@ -150,6 +156,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let res = client.kill_process("cargo", "my-cargo", None, None).await;
   /// ```
+  ///
   pub async fn kill_process(
     &self,
     kind: &str,
@@ -177,6 +184,7 @@ impl NanocldClient {
   /// let client = NanocldClient::connect_to("http://localhost:8585", None);
   /// let stream = client.wait_process("job", "my_job", None).await.unwrap();
   /// ```
+  ///
   pub async fn wait_process(
     &self,
     kind: &str,
@@ -190,6 +198,7 @@ impl NanocldClient {
   }
 
   /// The stats are streamed as a [Receiver](Receiver) of [stats](Stats)
+  ///
   pub async fn stats_processes(
     &self,
     kind: &str,
@@ -204,6 +213,27 @@ impl NanocldClient {
       .await?;
     Ok(Self::res_stream(res).await)
   }
+
+  /// Inspect a process by it's name
+  ///
+  /// ## Example
+  ///
+  /// ```no_run,ignore
+  /// use nanocld_client::NanocldClient;
+  ///
+  /// let client = NanocldClient::connect_to("http://localhost:8585", None);
+  /// let process = client.inspect_process("nstore.system.c").await.unwrap();
+  /// ```
+  ///
+  pub async fn inspect_process(&self, name: &str) -> HttpClientResult<Process> {
+    let res = self
+      .send_get(
+        &format!("{}/{name}/inspect", Self::PROCESS_PATH),
+        None::<String>,
+      )
+      .await?;
+    Self::res_json(res).await
+  }
 }
 
 #[cfg(test)]
@@ -215,7 +245,7 @@ mod tests {
   use futures::StreamExt;
 
   #[ntex::test]
-  async fn logs_cargo() {
+  async fn logs_process() {
     let client = NanocldClient::connect_to(&ConnectOpts {
       url: "http://nanocl.internal:8585".into(),
       ..Default::default()
@@ -230,5 +260,15 @@ mod tests {
       .await
       .unwrap();
     let _out = rx.next().await.unwrap().unwrap();
+  }
+
+  #[ntex::test]
+  async fn inspect_process() {
+    let client = NanocldClient::connect_to(&ConnectOpts {
+      url: "http://nanocl.internal:8585".into(),
+      ..Default::default()
+    })
+    .expect("Failed to create a nanocl client");
+    let _out = client.inspect_process("nstore.system.c").await.unwrap();
   }
 }
