@@ -199,7 +199,11 @@ pub async fn add_rule(
               let location = LocationTemplate {
                 path: location.path.clone(),
                 limit_req: location.limit_req.clone(),
-                upstream_key: format!("http://{upstream_key}"),
+                upstream_key: if ssl.is_some() {
+                  format!("https://{upstream_key}")
+                } else {
+                  format!("http://{upstream_key}")
+                },
                 redirect: None,
                 upstream_path: upstream.path.clone().unwrap_or("/".to_owned()),
                 version: location.version,
