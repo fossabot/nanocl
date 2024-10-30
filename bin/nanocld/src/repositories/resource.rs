@@ -211,11 +211,7 @@ impl ResourceDb {
           HttpError::bad_request(format!("Invalid schema {}", err))
         })?;
       schema.validate(&resource.data).map_err(|err| {
-        let mut msg = String::from("Invalid config ");
-        for error in err {
-          msg += &format!("{} ", error);
-        }
-        HttpError::bad_request(msg)
+        HttpError::bad_request(format!("Invalid schema {err}"))
       })?;
     }
     if let Some(url) = &kind.data.url {
