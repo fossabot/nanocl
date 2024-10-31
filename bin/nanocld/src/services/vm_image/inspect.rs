@@ -16,7 +16,8 @@ use crate::{
     ("name" = String, Path, description = "The name of the vm image"),
   ),
   responses(
-    (status = 200, description = "Detailed information about the vm image", body = VmImage),
+    (status = 200, description = "Detailed information about the vm image", body = nanocl_stubs::vm_image::VmImage),
+    (status = 404, description = "The vm image does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/vms/images/{name}/inspect")]

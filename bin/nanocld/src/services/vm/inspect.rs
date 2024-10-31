@@ -16,10 +16,11 @@ use crate::{
   path = "/vms/{name}/inspect",
   params(
     ("name" = String, Path, description = "The name of the virtual machine"),
-    ("namespace" = Option<String>, Query, description = "The namespace of the virtual machine"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the virtual machine belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "Detailed information about a virtual machine", body = VmInspect),
+    (status = 200, description = "Detailed information about a virtual machine", body = nanocl_stubs::vm::VmInspect),
+    (status = 404, description = "The virtual machine does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/vms/{name}/inspect")]

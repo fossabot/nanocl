@@ -15,8 +15,8 @@ use crate::{
   tag = "Namespaces",
   path = "/namespaces",
   responses(
-    (status = 200, description = "The created namespace", body = Namespace),
-    (status = 409, description = "Namespace already exist", body = ApiError),
+    (status = 200, description = "The created namespace", body = nanocl_stubs::namespace::Namespace),
+    (status = 409, description = "Namespace already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/namespaces")]

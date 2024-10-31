@@ -215,8 +215,8 @@ async fn exec_cargo_logs(
     until: opts.until,
     follow: Some(opts.follow),
     timestamps: Some(opts.timestamps),
-    stderr: None,
-    stdout: None,
+    stderr: Some(true),
+    stdout: Some(true),
   };
   let stream = client
     .logs_processes("cargo", &opts.name, Some(&query))

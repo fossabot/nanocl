@@ -19,7 +19,8 @@ use crate::{
     ("namespace" = Option<String>, Query, description = "The namespace of the virtual machine"),
   ),
   responses(
-    (status = 200, description = "The virtual machine has been created", body = Vm),
+    (status = 200, description = "The virtual machine has been created", body = nanocl_stubs::vm::Vm),
+    (status = 409, description = "The virtual machine already exists", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/vms")]

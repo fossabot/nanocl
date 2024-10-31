@@ -17,7 +17,7 @@ use crate::{
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"test\" } } } }"),
   ),
   responses(
-    (status = 200, description = "List of namespace", body = [NamespaceSummary]),
+    (status = 200, description = "List of namespace", body = [nanocl_stubs::namespace::NamespaceSummary]),
   ),
 ))]
 #[web::get("/namespaces")]

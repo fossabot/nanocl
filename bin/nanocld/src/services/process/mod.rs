@@ -1,6 +1,7 @@
 use ntex::web;
 
 pub mod count;
+pub mod inspect;
 pub mod kill;
 pub mod list;
 pub mod log;
@@ -11,6 +12,7 @@ pub mod stop;
 pub mod wait;
 
 pub use count::*;
+pub use inspect::*;
 pub use kill::*;
 pub use list::*;
 pub use log::*;
@@ -21,16 +23,17 @@ pub use stop::*;
 pub use wait::*;
 
 pub fn ntex_config(config: &mut web::ServiceConfig) {
+  config.service(logs_process);
+  config.service(inspect_process);
   config.service(list_processes);
   config.service(logs_processes);
-  config.service(logs_process);
   config.service(restart_processes);
   config.service(start_processes);
   config.service(stop_processes);
   config.service(kill_processes);
   config.service(wait_processes);
   config.service(stats_processes);
-  config.service(count_process);
+  config.service(count_processes);
 }
 
 #[cfg(test)]
@@ -106,5 +109,19 @@ mod tests {
     test_status_code!(res.status(), http::StatusCode::OK, "processes");
     let items: Vec<Process> = res.json::<Vec<Process>>().await.unwrap();
     assert!(items.iter().any(|i| i.name == "nstore.system.c"));
+  }
+
+  #[ntex::test]
+  async fn test_inspect() {
+    let system = gen_default_test_system().await;
+    let client = system.client;
+    let res = client
+      .send_get("/processes/nstore.system.c/inspect", None::<String>)
+      .await;
+    test_status_code!(
+      res.status(),
+      http::StatusCode::OK,
+      "basic process inspect"
+    );
   }
 }

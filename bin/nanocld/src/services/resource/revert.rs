@@ -19,8 +19,8 @@ use crate::{
     ("id" = String, Path, description = "The resource history id to revert to")
   ),
   responses(
-    (status = 200, description = "The resource has been revert", body = Resource),
-    (status = 404, description = "Resource is not existing", body = ApiError),
+    (status = 200, description = "The resource has been revert", body = nanocl_stubs::resource::Resource),
+    (status = 404, description = "Resource doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::patch("/resources/{name}/histories/{id}/revert")]
