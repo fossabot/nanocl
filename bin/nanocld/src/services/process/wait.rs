@@ -18,11 +18,12 @@ use crate::{
   tag = "Processes",
   path = "/processes/{kind}/{name}/wait",
   params(
-    ("name" = String, Path, description = "Name of the job instance usually `name` or `name-number`"),
+    ("kind" = String, Path, description = "Kind of the process", description = "Kind of the process instance eg: (cargo, job, vm)", example = "cargo"),
+    ("name" = String, Path, description = "Name of the process instance"),
   ),
   responses(
-    (status = 200, description = "Job wait", content_type = "application/vdn.nanocl.raw-stream"),
-    (status = 404, description = "Job does not exist"),
+    (status = 200, description = "Process wait stream", content_type = "application/vdn.nanocl.raw-stream"),
+    (status = 404, description = "Process does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/processes/{kind}/{name}/wait")]

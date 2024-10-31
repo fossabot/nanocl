@@ -16,7 +16,7 @@ use crate::{
     ("key" = String, Path, description = "Key of the event"),
   ),
   responses(
-    (status = 200, description = "Detailed information about the event", body = Event),
+    (status = 200, description = "Detailed information about the event", body = nanocl_stubs::system::Event),
   ),
 ))]
 #[web::get("/events/{key}/inspect")]

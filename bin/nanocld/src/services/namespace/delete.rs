@@ -17,7 +17,7 @@ use crate::{
   ),
   responses(
     (status = 202, description = "Namespace have been deleted"),
-    (status = 404, description = "Namespace is not existing", body = ApiError),
+    (status = 404, description = "Namespace is not existing", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/namespaces/{name}")]

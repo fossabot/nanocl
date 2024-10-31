@@ -16,10 +16,10 @@ use crate::{
   path = "/cargoes/{name}/inspect",
   params(
     ("name" = String, Path, description = "Name of the cargo"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "Cargo details", body = CargoInspect),
+    (status = 200, description = "Cargo details", body = nanocl_stubs::cargo::CargoInspect),
   ),
 ))]
 #[web::get("/cargoes/{name}/inspect")]

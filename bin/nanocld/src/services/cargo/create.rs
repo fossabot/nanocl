@@ -16,10 +16,11 @@ use crate::{
   path = "/cargoes",
   request_body = CargoSpecPartial,
   params(
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs"),
+    ("namespace" = Option<String>, Query, description = "Namespace where to create the cargo default to 'global'"),
   ),
   responses(
-    (status = 201, description = "Cargo created", body = Cargo),
+    (status = 201, description = "Cargo created", body = nanocl_stubs::cargo::Cargo),
+    (status = 409, description = "Cargo already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/cargoes")]

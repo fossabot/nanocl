@@ -16,12 +16,12 @@ use crate::{
   path = "/cargoes/{name}",
   params(
     ("name" = String, Path, description = "Name of the cargo"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs default to global namespace"),
     ("force" = bool, Query, description = "If true forces the delete operation even if the cargo is started"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
     (status = 202, description = "Cargo deleted"),
-    (status = 404, description = "Cargo does not exist"),
+    (status = 404, description = "Cargo does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/cargoes/{name}")]

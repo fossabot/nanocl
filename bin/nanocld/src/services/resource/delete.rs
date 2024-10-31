@@ -17,7 +17,7 @@ use crate::{
   ),
   responses(
     (status = 202, description = "The resource and his history has been deleted"),
-    (status = 404, description = "Resource is not existing", body = ApiError),
+    (status = 404, description = "Resource doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/resources/{name}")]

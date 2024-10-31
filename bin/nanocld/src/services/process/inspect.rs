@@ -20,7 +20,8 @@ use crate::{
     ("name" = String, Path, description = "Name of the process"),
   ),
   responses(
-    (status = 200, description = "Cargo details", body = Process),
+    (status = 200, description = "Process details", body = Process),
+    (status = 404, description = "Process doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/processes/{name}/inspect")]

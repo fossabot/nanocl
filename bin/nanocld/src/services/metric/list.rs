@@ -18,7 +18,7 @@ use crate::{
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"kind\": { \"eq\": \"CPU\" } } } }"),
   ),
   responses(
-    (status = 200, description = "List of metrics", body = Vec<Metric>),
+    (status = 200, description = "List of metrics", body = Vec<nanocl_stubs::metric::Metric>),
   ),
 ))]
 #[web::get("/metrics")]
