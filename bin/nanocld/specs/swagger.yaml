@@ -4286,6 +4286,12 @@ components:
           type: boolean
           description: Indicates whether this is an official registry (i.e., Docker Hub / docker.io)
           nullable: true
+    IpAddr:
+      type: string
+      title: IpAddr
+      description: IpAddr
+      example: 192.168.0.10
+      nullable: true
     Ipam:
       type: object
       properties:
@@ -5354,6 +5360,31 @@ components:
         IPv6Address:
           type: string
           nullable: true
+    NetworkKind:
+      oneOf:
+      - type: string
+        description: All networks
+        enum:
+        - All
+      - type: string
+        description: Only 127.0.0.1
+        enum:
+        - Local
+      - type: string
+        description: Only public ip addresses
+        enum:
+        - Public
+      - type: string
+        description: Only internal ip addresses
+        enum:
+        - Internal
+      - type: object
+        required:
+        - Other
+        properties:
+          Other:
+            $ref: '#/components/schemas/IpAddr'
+      description: Network binding kinds
     NetworkSettings:
       type: object
       description: NetworkSettings exposes the network settings in the API

@@ -46,6 +46,7 @@ use nanocl_stubs::config::DaemonConfig;
 use nanocl_stubs::dns::{DnsEntry, ResourceDnsRule};
 use nanocl_stubs::generic::{
   GenericClause, GenericCount, GenericFilter, GenericWhere, ImagePullPolicy,
+  NetworkKind,
 };
 use nanocl_stubs::job::{Job, JobInspect, JobPartial, JobSummary};
 use nanocl_stubs::metric::{Metric, MetricPartial};
@@ -158,6 +159,26 @@ impl<'__s> utoipa::ToSchema<'__s> for BollardDate {
         .schema_type(utoipa::openapi::schema::SchemaType::String)
         .example(Some("2021-01-01T00:00:00.000000000Z".into()))
         .build()
+        .into(),
+    )
+  }
+}
+
+struct IpAddr;
+
+impl<'__s> utoipa::ToSchema<'__s> for IpAddr {
+  fn schema() -> (
+    &'__s str,
+    utoipa::openapi::RefOr<utoipa::openapi::schema::Schema>,
+  ) {
+    (
+      "IpAddr",
+      utoipa::openapi::ObjectBuilder::new()
+        .nullable(true)
+        .title(Some("IpAddr"))
+        .description(Some("IpAddr"))
+        .schema_type(utoipa::openapi::schema::SchemaType::String)
+        .example(Some("192.168.0.10".into()))
         .into(),
     )
   }
@@ -456,6 +477,8 @@ impl Modify for VersionModifier {
     GraphDriverData,
     // Network
     Network,
+    NetworkKind,
+    IpAddr,
     // Vm Image
     VmImage,
     VmImageResizePayload,

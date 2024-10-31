@@ -293,10 +293,15 @@ pub enum ImagePullPolicy {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "PascalCase"))]
 pub enum NetworkKind {
+  /// All networks
   All,
+  /// Only 127.0.0.1
   Local,
+  /// Only public ip addresses
   Public,
+  /// Only internal ip addresses
   Internal,
+  /// Specific ip address
   Other(IpAddr),
 }
 
