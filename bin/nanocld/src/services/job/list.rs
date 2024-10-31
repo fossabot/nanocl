@@ -17,7 +17,7 @@ use crate::{
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"job-example\" } } } }"),
   ),
   responses(
-    (status = 200, description = "List of jobs", body = [JobSummary]),
+    (status = 200, description = "List of jobs", body = [nanocl_stubs::job::JobSummary]),
   ),
 ))]
 #[web::get("/jobs")]

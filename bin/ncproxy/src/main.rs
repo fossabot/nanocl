@@ -3,7 +3,7 @@
 /// The program in charge of managing writing proxy configuration.
 /// It's based on nginx and use the nanocld api to get the configuration wanted by the user.
 ///
-/// It work by doing 4 main tasks:ncproxy is
+/// It work by doing 4 main tasks:
 /// - Create a new rule in nginx when a resource `ncproxy.io/rule` is created
 /// - Delete a new rule in nginx when a resource `ncproxy.io/rule` is deleted
 /// - Watch nanocld events for resource, cargo and vm change to update proxy rules accordingly

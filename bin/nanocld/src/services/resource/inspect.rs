@@ -16,8 +16,8 @@ use crate::{
     ("name" = String, Path, description = "The resource name to inspect")
   ),
   responses(
-    (status = 200, description = "Detailed information about a resource", body = Resource),
-    (status = 404, description = "Resource is not existing", body = ApiError),
+    (status = 200, description = "Detailed information about a resource", body = nanocl_stubs::resource::Resource),
+    (status = 404, description = "Resource doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/resources/{name}/inspect")]

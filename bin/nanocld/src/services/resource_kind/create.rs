@@ -12,7 +12,8 @@ use crate::models::{ResourceKindDb, SystemState};
   path = "/resource/kinds",
   request_body = ResourceKindPartial,
   responses(
-    (status = 201, description = "Job created", body = ResourceKind),
+    (status = 201, description = "Job created", body = nanocl_stubs::resource_kind::ResourceKind),
+    (status = 409, description = "Resource kind already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/resource/kinds")]

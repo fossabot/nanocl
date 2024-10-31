@@ -18,7 +18,7 @@ use crate::{
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"my-image\" } } } }"),
   ),
   responses(
-    (status = 200, description = "List of vm images", body = [VmImage]),
+    (status = 200, description = "List of vm images", body = [nanocl_stubs::vm_image::VmImage]),
   ),
 ))]
 #[web::get("/vms/images")]

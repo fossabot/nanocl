@@ -15,10 +15,10 @@ use crate::{
   path = "/cargoes",
   params(
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"test\" } } } }"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes are default to global namespace"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "List of cargoes", body = [CargoSummary]),
+    (status = 200, description = "List of cargoes", body = [nanocl_stubs::cargo::CargoSummary]),
   ),
 ))]
 #[web::get("/cargoes")]

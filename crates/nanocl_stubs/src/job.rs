@@ -2,9 +2,14 @@ use serde::{Deserialize, Serialize};
 
 use bollard_next::container::Config;
 
-use crate::generic::ImagePullPolicy;
-use crate::process::Process;
-use crate::system::{EventActor, EventActorKind, ObjPsStatus};
+use crate::{
+  generic::ImagePullPolicy,
+  process::Process,
+  system::{EventActor, EventActorKind, ObjPsStatus},
+};
+
+#[cfg(feature = "utoipa")]
+use super::generic::Any;
 
 /// Job partial is used to create a new job
 #[derive(Debug, Default, Clone, PartialEq)]
