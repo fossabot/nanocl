@@ -17,7 +17,7 @@ use crate::{
   ),
   responses(
     (status = 202, description = "Job deleted"),
-    (status = 404, description = "Job does not exist"),
+    (status = 404, description = "Job does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/jobs/{name}")]

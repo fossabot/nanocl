@@ -1,9 +1,13 @@
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-pub use bollard_next::container::Config;
-pub use bollard_next::models::HealthConfig;
-pub use bollard_next::models::HostConfig;
+pub use bollard_next::{
+  container::Config,
+  models::{HealthConfig, HostConfig},
+};
+
+#[cfg(feature = "utoipa")]
+use super::generic::Any;
 
 use crate::generic::ImagePullPolicy;
 

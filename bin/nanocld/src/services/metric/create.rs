@@ -15,7 +15,8 @@ use crate::{
   path = "/metrics",
   request_body = MetricPartial,
   responses(
-    (status = 201, description = "Metric created", body = Metric),
+    (status = 201, description = "Metric created", body = nanocl_stubs::metric::Metric),
+    (status = 409, description = "Metric already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/metrics")]

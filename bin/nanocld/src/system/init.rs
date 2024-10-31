@@ -111,6 +111,11 @@ async fn ensure_state_dir(state_dir: &str) -> IoResult<()> {
   fs::create_dir_all(vm_dir).await.map_err(|err| {
     err.map_err_context(|| format!("Unable to create {state_dir}/vms/images"))
   })?;
+  fs::create_dir_all(format!("{state_dir}/secrets"))
+    .await
+    .map_err(|err| {
+      err.map_err_context(|| format!("Unable to create {state_dir}/secrets"))
+    })?;
   Ok(())
 }
 

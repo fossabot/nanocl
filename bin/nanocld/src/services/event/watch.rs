@@ -12,7 +12,7 @@ use crate::models::SystemState;
   path = "/events/watch",
   request_body = Option<Vec<EventCondition>>,
   responses(
-    (status = 200, description = "Event stream", body = String),
+    (status = 200, description = "Event stream", body = String, content_type = "text/event-stream"),
   ),
 ))]
 #[web::post("/events/watch")]

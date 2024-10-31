@@ -18,7 +18,7 @@ use crate::{
   ),
   responses(
     (status = 202, description = "Resource kind deleted"),
-    (status = 404, description = "Resource kind does not exist"),
+    (status = 404, description = "Resource kind doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/resource/kinds/{domain}/{name}")]

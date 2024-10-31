@@ -17,11 +17,11 @@ use crate::{
   path = "/vms/{name}",
   params(
     ("name" = String, Path, description = "Name of the virtual machine"),
-    ("namespace" = Option<String>, Query, description = "Namespace of the virtual machine"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the virtual machine belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "Updated virtual machine", body = Vm),
-    (status = 404, description = "Virtual machine not found", body = ApiError),
+    (status = 200, description = "Updated virtual machine", body = nanocl_stubs::vm::Vm),
+    (status = 404, description = "Virtual machine not found", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::patch("/vms/{name}")]

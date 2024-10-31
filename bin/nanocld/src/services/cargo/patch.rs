@@ -17,11 +17,11 @@ use crate::{
   path = "/cargoes/{name}",
   params(
     ("name" = String, Path, description = "Name of the cargo"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs default to global namespace"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "Cargo updated", body = Cargo),
-    (status = 404, description = "Cargo does not exist"),
+    (status = 200, description = "Cargo updated", body = nanocl_stubs::cargo::Cargo),
+    (status = 404, description = "Cargo does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::patch("/cargoes/{name}")]

@@ -22,7 +22,7 @@ use crate::{
   ),
 ))]
 #[web::get("/processes/count")]
-pub async fn count_process(
+pub async fn count_processes(
   state: web::types::State<SystemState>,
   qs: web::types::Query<GenericListQuery>,
 ) -> HttpResult<web::HttpResponse> {

@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand, ValueEnum};
+use nanocld_client::stubs::process::ProcessLogQuery;
 use serde::{Deserialize, Serialize};
 
 mod backup;
@@ -50,6 +51,43 @@ pub struct Cli {
   pub command: Command,
 }
 
+/// `nanocl logs` available options
+#[derive(Clone, Parser)]
+pub struct LogsOpts {
+  /// Name of process to show logs
+  pub name: String,
+  /// Only include logs since unix timestamp
+  #[clap(short = 's')]
+  pub since: Option<i64>,
+  /// Only include logs until unix timestamp
+  #[clap(short = 'u')]
+  pub until: Option<i64>,
+  /// If integer only return last n logs, if "all" returns all logs
+  #[clap(short = 't')]
+  pub tail: Option<String>,
+  /// Bool, if set include timestamp to ever log line
+  #[clap(long = "timestamps")]
+  pub timestamps: bool,
+  /// Bool, if set open the log as stream
+  #[clap(short = 'f')]
+  pub follow: bool,
+}
+
+impl From<LogsOpts> for ProcessLogQuery {
+  fn from(opts: LogsOpts) -> Self {
+    Self {
+      namespace: None,
+      since: opts.since,
+      until: opts.until,
+      tail: opts.tail,
+      timestamps: Some(opts.timestamps),
+      follow: Some(opts.follow),
+      stderr: Some(true),
+      stdout: Some(true),
+    }
+  }
+}
+
 /// Nanocl available commands
 #[derive(Subcommand)]
 pub enum Command {
@@ -77,6 +115,10 @@ pub enum Command {
   Event(EventArg),
   /// Show processes
   Ps(GenericListOpts<ProcessFilter>),
+  /// Get logs of a process
+  Logs(LogsOpts),
+  /// Inspect a process
+  Inspect(GenericInspectOpts),
   /// Show nanocl host information
   Info,
   /// Show nanocl version information
