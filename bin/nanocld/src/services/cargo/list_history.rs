@@ -15,11 +15,11 @@ use crate::{
   path = "/cargoes/{name}/histories",
   params(
     ("name" = String, Path, description = "Name of the cargo"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "List of cargo histories", body = Vec<CargoSpec>),
-    (status = 404, description = "Cargo does not exist"),
+    (status = 200, description = "List of cargo histories", body = Vec<nanocl_stubs::cargo_spec::CargoSpec>),
+    (status = 404, description = "Cargo does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/cargoes/{name}/histories")]

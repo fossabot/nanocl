@@ -14,6 +14,7 @@ use crate::{models::SystemState, utils};
   ),
   responses(
     (status = 200, description = "Image have been deleted"),
+    (status = 404, description = "The vm image does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/vms/images/{name}")]

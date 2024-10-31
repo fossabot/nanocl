@@ -21,7 +21,7 @@ use crate::{
     ("until" = Option<i64>, Query, description = "Only logs returned until timestamp"),
     ("timestamps" = Option<bool>, Query, description = "Add timestamps to every log line"),
     ("follow" = Option<bool>, Query, description = "Boolean to return a stream or not"),
-    ("tail" = Option<String>, Query, description = "Only return the n last (integer) or all (\"all\") logs"),
+    ("tail" = Option<String>, Query, description = "Only return the n last (integer) or all ('all') logs"),
   ),
   responses(
     (status = 200, description = "Process instances logs", content_type = "application/vdn.nanocl.raw-stream"),
@@ -78,7 +78,7 @@ async fn logs_process(
     ("until" = Option<i64>, Query, description = "Only logs returned until timestamp"),
     ("timestamps" = Option<bool>, Query, description = "Add timestamps to every log line"),
     ("follow" = Option<bool>, Query, description = "Boolean to return a stream or not"),
-    ("tail" = Option<String>, Query, description = "Only return the n last (integer) or all (\"all\") logs"),
+    ("tail" = Option<String>, Query, description = "Only return the n last (integer) or all ('all') logs"),
   ),
   responses(
     (status = 200, description = "Process instances logs", content_type = "application/vdn.nanocl.raw-stream"),

@@ -1,13 +1,15 @@
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use nanocl_error::io::{FromIo, IoError};
-
 use nanocl_stubs::process::{Process, ProcessKind, ProcessPartial};
 
 use crate::schema::processes;
 
 /// Represents a process (job, cargo, vm) in the database
-#[derive(Clone, Queryable, Identifiable, Insertable, Selectable)]
+#[derive(
+  Clone, Queryable, Identifiable, Insertable, Selectable, Serialize, Deserialize,
+)]
 #[diesel(primary_key(key))]
 #[diesel(table_name = processes)]
 pub struct ProcessDb {

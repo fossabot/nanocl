@@ -16,7 +16,7 @@ use crate::{models::SystemState, utils};
   ),
   responses(
     (status = 200, description = "Event Stream of the command output", content_type = "text/event-stream"),
-    (status = 404, description = "Cargo does not exist"),
+    (status = 404, description = "Cargo does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/exec/{id}/cargo/start")]

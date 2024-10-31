@@ -18,7 +18,7 @@ use crate::{
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"test\" } } } }"),
   ),
   responses(
-    (status = 200, description = "List of nodes", body = [Node]),
+    (status = 200, description = "List of nodes", body = [GenericCount]),
   ),
 ))]
 #[web::get("/nodes/count")]

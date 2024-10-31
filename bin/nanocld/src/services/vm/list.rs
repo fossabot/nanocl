@@ -15,10 +15,10 @@ use crate::{
   path = "/vms",
   params(
     ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"my-vm\" } } } }"),
-    ("namespace" = Option<String>, Query, description = "The namespace of the virtual machine"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the virtual machine belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "List of virtual machine", body = [VmSummary]),
+    (status = 200, description = "List of virtual machine", body = [nanocl_stubs::vm::VmSummary]),
   ),
 ))]
 #[web::get("/vms")]

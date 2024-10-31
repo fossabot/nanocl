@@ -90,7 +90,7 @@ pub mod tests {
 
   pub async fn ensure_test_image() {
     let name = "ubuntu-22-test";
-    let path = "../../tests/ubuntu-22.04-minimal-cloudimg-amd64.img";
+    let path = "../../tests/ubuntu-24.04-minimal-cloudimg-amd64.img";
     if inspect_image(name).await.is_ok() {
       return;
     }
@@ -102,7 +102,7 @@ pub mod tests {
     let system = gen_default_test_system().await;
     let client = system.client;
     let name = "ubuntu-22-test-basic";
-    let path = "../../tests/ubuntu-22.04-minimal-cloudimg-amd64.img";
+    let path = "../../tests/ubuntu-24.04-minimal-cloudimg-amd64.img";
     import_image(name, path).await.unwrap();
     let image = inspect_image(name).await.unwrap();
     assert_eq!(image.name, name);

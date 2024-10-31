@@ -1,3 +1,6 @@
+use futures::{stream::FuturesUnordered, StreamExt};
+use ntex::rt;
+
 use bollard_next::{
   container::{
     Config, RemoveContainerOptions, RenameContainerOptions,
@@ -5,9 +8,6 @@ use bollard_next::{
   },
   secret::{HostConfig, RestartPolicy, RestartPolicyNameEnum},
 };
-use futures::{stream::FuturesUnordered, StreamExt};
-use ntex::rt;
-
 use nanocl_error::io::{FromIo, IoError, IoResult};
 use nanocl_stubs::{
   cargo::Cargo,
@@ -18,10 +18,95 @@ use nanocl_stubs::{
 };
 
 use crate::{
-  models::{CargoDb, ObjPsStatusDb, ProcessDb, SecretDb, SystemState},
+  models::{CargoDb, ObjPsStatusDb, ProcessDb, SystemState},
   repositories::generic::*,
   utils,
 };
+
+fn create_cargo_env(
+  cargo: &Cargo,
+  secret_envs: Vec<String>,
+  current: usize,
+  state: &SystemState,
+) -> Vec<String> {
+  let mut envs = cargo.spec.container.env.clone().unwrap_or_default();
+  // merge cargo env with secret env
+  envs.extend(secret_envs);
+  envs.push(format!("NANOCL_NODE={}", state.inner.config.hostname));
+  envs.push(format!("NANOCL_NODE_ADDR={}", state.inner.config.gateway));
+  envs.push(format!("NANOCL_CARGO_KEY={}", cargo.spec.cargo_key));
+  envs.push(format!("NANOCL_CARGO_NAMESPACE={}", cargo.namespace_name));
+  envs.push(format!("NANOCL_CARGO_INSTANCE={}", current));
+  envs
+}
+
+/// Function that create the init container of the cargo
+///
+async fn create_init_container(
+  cargo: &Cargo,
+  init_container: &Config,
+  state: &SystemState,
+) -> IoResult<Process> {
+  let mut init_container = init_container.clone();
+  let image = init_container
+    .image
+    .clone()
+    .unwrap_or(cargo.spec.container.image.clone().unwrap());
+  let host_config = init_container.host_config.unwrap_or_default();
+  init_container.image = Some(image.clone());
+  let secret_dir = utils::secret::create_tls_secrets(
+    &cargo.spec.cargo_key,
+    &ProcessKind::Cargo,
+    &cargo.spec.secrets,
+    state,
+  )
+  .await?;
+  // Add the secret directory to the bind mounts
+  let mut binds = host_config.binds.unwrap_or_default();
+  binds.push(format!("{}:/opt/nanocl.io/secrets", secret_dir));
+  init_container.host_config = Some(HostConfig {
+    binds: Some(binds),
+    network_mode: Some(
+      host_config.network_mode.unwrap_or("nanoclbr0".to_owned()),
+    ),
+    ..host_config
+  });
+  super::image::download(
+    &image,
+    cargo.spec.image_pull_secret.clone(),
+    cargo.spec.image_pull_policy.clone().unwrap_or_default(),
+    cargo,
+    state,
+  )
+  .await?;
+  let env_secrets =
+    utils::secret::load_env_secrets(&cargo.spec.secrets, state).await?;
+  let env = create_cargo_env(cargo, env_secrets, 0, state);
+  init_container.env = Some(env);
+  let mut labels = init_container.labels.to_owned().unwrap_or_default();
+  labels.insert("io.nanocl.c".to_owned(), cargo.spec.cargo_key.to_owned());
+  labels.insert("io.nanocl.n".to_owned(), cargo.namespace_name.to_owned());
+  labels.insert("io.nanocl.init-c".to_owned(), "true".to_owned());
+  labels.insert(
+    "com.docker.compose.project".into(),
+    format!("nanocl_{}", cargo.namespace_name),
+  );
+  init_container.labels = Some(labels);
+  let short_id = utils::key::generate_short_id(6);
+  let name = format!(
+    "init-{}-{}.{}.c",
+    cargo.spec.name, short_id, cargo.namespace_name
+  );
+  let process = super::process::create(
+    &ProcessKind::Cargo,
+    &name,
+    &cargo.spec.cargo_key,
+    &init_container,
+    state,
+  )
+  .await?;
+  Ok(process)
+}
 
 /// Function that start and wait the status of the init container before the main cargo container
 ///
@@ -66,59 +151,6 @@ async fn start_init_container(
   Ok(())
 }
 
-/// Function that create the init container of the cargo
-///
-async fn create_init_container(
-  cargo: &Cargo,
-  init_container: &Config,
-  state: &SystemState,
-) -> IoResult<Process> {
-  let mut init_container = init_container.clone();
-  let image = init_container
-    .image
-    .clone()
-    .unwrap_or(cargo.spec.container.image.clone().unwrap());
-  let host_config = init_container.host_config.unwrap_or_default();
-  init_container.image = Some(image.clone());
-  init_container.host_config = Some(HostConfig {
-    network_mode: Some(
-      host_config.network_mode.unwrap_or("nanoclbr0".to_owned()),
-    ),
-    ..host_config
-  });
-  super::image::download(
-    &image,
-    cargo.spec.image_pull_secret.clone(),
-    cargo.spec.image_pull_policy.clone().unwrap_or_default(),
-    cargo,
-    state,
-  )
-  .await?;
-  let mut labels = init_container.labels.to_owned().unwrap_or_default();
-  labels.insert("io.nanocl.c".to_owned(), cargo.spec.cargo_key.to_owned());
-  labels.insert("io.nanocl.n".to_owned(), cargo.namespace_name.to_owned());
-  labels.insert("io.nanocl.init-c".to_owned(), "true".to_owned());
-  labels.insert(
-    "com.docker.compose.project".into(),
-    format!("nanocl_{}", cargo.namespace_name),
-  );
-  init_container.labels = Some(labels);
-  let short_id = utils::key::generate_short_id(6);
-  let name = format!(
-    "init-{}-{}.{}.c",
-    cargo.spec.name, short_id, cargo.namespace_name
-  );
-  let process = super::process::create(
-    &ProcessKind::Cargo,
-    &name,
-    &cargo.spec.cargo_key,
-    &init_container,
-    state,
-  )
-  .await?;
-  Ok(process)
-}
-
 /// Execute the cargo spec to create the cargo container
 ///
 pub async fn create(
@@ -137,27 +169,21 @@ pub async fn create(
     state,
   )
   .await?;
-  let mut secret_envs: Vec<String> = Vec::new();
-  if let Some(secrets) = &cargo.spec.secrets {
-    let filter = GenericFilter::new()
-      .r#where("key", GenericClause::In(secrets.clone()))
-      .r#where("kind", GenericClause::Eq("nanocl.io/env".to_owned()));
-    let secrets = SecretDb::transform_read_by(&filter, &state.inner.pool)
-      .await?
-      .into_iter()
-      .map(|secret| {
-        let envs = serde_json::from_value::<Vec<String>>(secret.data)?;
-        Ok::<_, IoError>(envs)
-      })
-      .collect::<IoResult<Vec<Vec<String>>>>()?;
-    // Flatten the secrets to have envs in a single vector
-    secret_envs = secrets.into_iter().flatten().collect();
-  }
+  let env_secrets =
+    utils::secret::load_env_secrets(&cargo.spec.secrets, state).await?;
+  let secret_dir = utils::secret::create_tls_secrets(
+    &cargo.spec.cargo_key,
+    &ProcessKind::Cargo,
+    &cargo.spec.secrets,
+    state,
+  )
+  .await?;
   let instances = (0..number)
     .collect::<Vec<usize>>()
     .into_iter()
     .map(move |current| {
-      let secret_envs = secret_envs.clone();
+      let env_secrets = env_secrets.clone();
+      let secret_dir = secret_dir.clone();
       async move {
         let ordinal_index = if current > 0 {
           current.to_string()
@@ -195,23 +221,14 @@ pub async fn create(
             name: Some(RestartPolicyNameEnum::ALWAYS),
             maximum_retry_count: None,
           }));
-        let mut env = container.env.unwrap_or_default();
-        // merge cargo env with secret env
-        env.extend(secret_envs);
-        env.push(format!("NANOCL_NODE={}", state.inner.config.hostname));
-        env.push(format!("NANOCL_NODE_ADDR={}", state.inner.config.gateway));
-        env.push(format!(
-          "NANOCL_CARGO_KEY={}",
-          cargo.spec.cargo_key.to_owned()
-        ));
-        env.push(format!("NANOCL_CARGO_NAMESPACE={}", cargo.namespace_name));
-        env.push(format!("NANOCL_CARGO_INSTANCE={}", current));
-        // Merge the cargo spec with the container spec
-        // And set his network mode to the cargo namespace
+        let env = create_cargo_env(cargo, env_secrets, current, state);
         let hostname = match &cargo.spec.container.hostname {
           None => format!("{}{}", ordinal_index, cargo.spec.name),
           Some(hostname) => format!("{}{}", ordinal_index, hostname),
         };
+        // mount the secret directory to the container
+        let mut binds = host_config.binds.clone().unwrap_or_default();
+        binds.push(format!("{}:/opt/nanocl.io/secrets", secret_dir));
         let new_process = bollard_next::container::Config {
           attach_stderr: Some(true),
           attach_stdout: Some(true),
@@ -222,6 +239,7 @@ pub async fn create(
           host_config: Some(HostConfig {
             restart_policy,
             network_mode: Some("nanoclbr0".to_owned()),
+            binds: Some(binds),
             ..host_config
           }),
           ..container

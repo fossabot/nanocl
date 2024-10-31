@@ -13,7 +13,7 @@ use crate::{models::SystemState, utils};
   params(
     ("kind" = String, Path, description = "Kind of the process", example = "cargo"),
     ("name" = String, Path, description = "Name of the process", example = "deploy-example"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the process belongs is needed"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the process belongs if needed"),
   ),
   responses(
     (status = 202, description = "Process instances restarted"),
