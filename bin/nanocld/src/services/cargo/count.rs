@@ -15,8 +15,8 @@ use crate::{
   tag = "Cargoes",
   path = "/cargoes/count",
   params(
-    ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"kind\": { \"eq\": \"CPU\" } } } }"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes are"),
+    ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"name\": { \"eq\": \"my-cargo\" } } } }"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
     (status = 200, description = "Count result", body = GenericCount),
@@ -31,7 +31,6 @@ pub async fn count_cargo(
   let namespace = utils::key::resolve_nsp(&qs.namespace);
   let filter = filter
     .filter
-    .clone()
     .unwrap_or_default()
     .r#where("namespace_name", GenericClause::Eq(namespace));
   let count = CargoDb::count_by(&filter, &state.inner.pool).await?;

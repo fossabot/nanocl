@@ -8,7 +8,7 @@ use crate::vars;
   tag = "System",
   path = "/version",
   responses(
-    (status = 200, description = "Version information", body = BinaryInfo),
+    (status = 200, description = "Version information", body = nanocl_stubs::system::BinaryInfo),
   ),
 ))]
 #[web::get("/version")]

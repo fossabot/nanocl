@@ -1,6 +1,9 @@
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "utoipa")]
+use super::generic::Any;
+
 use crate::system::{EventActor, EventActorKind};
 
 /// Payload used to create a new resource

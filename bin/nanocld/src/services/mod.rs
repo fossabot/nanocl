@@ -3,7 +3,7 @@ use ntex::web;
 use nanocl_error::http::{HttpError, HttpResult};
 
 #[cfg(feature = "dev")]
-mod openapi;
+pub mod openapi;
 
 mod cargo;
 mod event;

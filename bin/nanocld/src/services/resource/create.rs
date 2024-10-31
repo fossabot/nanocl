@@ -15,7 +15,8 @@ use crate::{
   tag = "Resources",
   path = "/resources",
   responses(
-    (status = 200, description = "The created resource", body = Resource),
+    (status = 200, description = "The created resource", body = nanocl_stubs::resource::Resource),
+    (status = 409, description = "Resource already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/resources")]

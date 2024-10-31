@@ -19,8 +19,8 @@ use crate::{
     ("name" = String, Path, description = "Name of the resource")
   ),
   responses(
-    (status = 200, description = "Resource updated", body = Resource),
-    (status = 404, description = "Resource does not exit", body = ApiError),
+    (status = 200, description = "Resource updated", body = nanocl_stubs::resource::Resource),
+    (status = 404, description = "Resource does not exit", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::put("/resources/{name}")]

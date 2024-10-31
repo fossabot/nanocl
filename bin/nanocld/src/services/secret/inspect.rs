@@ -16,8 +16,8 @@ use crate::{
     ("key" = String, Path, description = "Key of the secret")
   ),
   responses(
-    (status = 200, description = "Detailed information about a secret", body = Secret),
-    (status = 404, description = "Namespace is not existing", body = ApiError),
+    (status = 200, description = "Detailed information about a secret", body = nanocl_stubs::secret::Secret),
+    (status = 404, description = "Secret doesn't", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/secrets/{key}/inspect")]

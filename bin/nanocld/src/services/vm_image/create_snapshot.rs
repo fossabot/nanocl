@@ -19,7 +19,7 @@ use crate::{
     ("snap" = String, Path, description = "The name of the snapshot"),
   ),
   responses(
-    (status = 200, description = "The snapshot have been created", body = VmImage),
+    (status = 200, description = "The snapshot have been created", body = nanocl_stubs::vm_image::VmImage),
   ),
 ))]
 #[web::post("/vms/images/{name}/snapshot/{snapshot_name}")]

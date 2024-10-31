@@ -18,13 +18,13 @@ use crate::{
   params(
     ("kind" = String, Path, description = "Kind of process", example = "cargo"),
     ("name" = String, Path, description = "Name of the process group", example = "deploy-example"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the process belongs if needed"),
     ("stream" = Option<bool>, Query, description = "Return a stream of stats"),
     ("one_shot" = Option<bool>, Query, description = "Return stats only once"),
   ),
   responses(
     (status = 200, description = "Process stats", content_type = "application/vdn.nanocl.raw-stream", body = ProcessStats),
-    (status = 404, description = "Process does not exist"),
+    (status = 404, description = "Process does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/processes/{kind}/{name}/stats")]

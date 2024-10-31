@@ -17,7 +17,7 @@ use crate::{
   ),
   responses(
     (status = 202, description = "Secret have been deleted"),
-    (status = 404, description = "Secret don't exists", body = ApiError),
+    (status = 404, description = "Secret doesn't exists", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/secrets/{key}")]
