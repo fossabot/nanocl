@@ -1,6 +1,6 @@
 ---
 title: Resource inspect
-sidebar_position: 48
+sidebar_position: 50
 ---
 
 # Resource inspect
