@@ -15,7 +15,7 @@ use crate::{models::SystemState, utils};
     ("name" = String, Path, description = "The name of the vm image"),
   ),
   responses(
-    (status = 200, description = "The snapshot have been created", body = VmImage),
+    (status = 200, description = "The snapshot have been created", body = nanocl_stubs::vm_image::VmImage),
   ),
 ))]
 #[web::post("/vms/images/{name}/resize")]

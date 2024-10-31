@@ -16,7 +16,7 @@ use crate::{
     ("name" = String, Path, description = "Name of the job"),
   ),
   responses(
-    (status = 200, description = "Job details", body = JobInspect),
+    (status = 200, description = "Job details", body = nanocl_stubs::job::JobInspect),
   ),
 ))]
 #[web::get("/jobs/{name}/inspect")]

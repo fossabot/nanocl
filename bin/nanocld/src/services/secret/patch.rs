@@ -18,8 +18,8 @@ use crate::{
     ("key" = String, Path, description = "Key of the secret"),
   ),
   responses(
-    (status = 200, description = "Secret scaled", body = Secret),
-    (status = 404, description = "Secret does not exist", body = ApiError),
+    (status = 200, description = "Secret patched", body = nanocl_stubs::secret::Secret),
+    (status = 404, description = "Secret does't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::patch("/secrets/{key}")]

@@ -15,7 +15,8 @@ use crate::{
   path = "/jobs",
   request_body = JobPartial,
   responses(
-    (status = 201, description = "Job created", body = Job),
+    (status = 201, description = "Job created", body = nanocl_stubs::job::Job),
+    (status = 409, description = "Job already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/jobs")]

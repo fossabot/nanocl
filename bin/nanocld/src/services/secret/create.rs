@@ -17,8 +17,8 @@ use crate::{
   tag = "Secrets",
   path = "/secrets",
   responses(
-    (status = 200, description = "List of secret", body = Secret),
-    (status = 409, description = "Namespace already exist", body = ApiError),
+    (status = 200, description = "List of secret", body = nanocl_stubs::secret::Secret),
+    (status = 409, description = "Secret already exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/secrets")]

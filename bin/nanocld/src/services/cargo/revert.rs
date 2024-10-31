@@ -14,18 +14,18 @@ use crate::{
 #[cfg_attr(feature = "dev", utoipa::path(
   patch,
   tag = "Cargoes",
-  path = "/cargoes/{name}/histories/{id}/revert",
+  path = "/cargoes/{name}/histories/{key}/revert",
   params(
     ("name" = String, Path, description = "Name of the cargo"),
-    ("id" = String, Path, description = "Id of the cargo history"),
-    ("namespace" = Option<String>, Query, description = "Namespace where the cargo belongs default to global namespace"),
+    ("key" = String, Path, description = "Key of the cargo history"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the cargoes belongs default to 'global'"),
   ),
   responses(
-    (status = 200, description = "Cargo revert", body = Cargo),
-    (status = 404, description = "Cargo does not exist", body = ApiError),
+    (status = 200, description = "Cargo revert", body = nanocl_stubs::cargo::Cargo),
+    (status = 404, description = "Cargo does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
-#[web::patch("/cargoes/{name}/histories/{id}/revert")]
+#[web::patch("/cargoes/{name}/histories/{key}/revert")]
 pub async fn revert_cargo(
   state: web::types::State<SystemState>,
   path: web::types::Path<(String, String, uuid::Uuid)>,

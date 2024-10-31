@@ -16,10 +16,11 @@ use crate::{
   path = "/vms/{name}",
   params(
     ("name" = String, Path, description = "The name of the virtual machine"),
-    ("namespace" = Option<String>, Query, description = "The namespace of the virtual machine default to global namespace"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the virtual machine belongs default to 'global'"),
   ),
   responses(
     (status = 200, description = "The virtual machine has been deleted"),
+    (status = 404, description = "The virtual machine does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::delete("/vms/{name}")]

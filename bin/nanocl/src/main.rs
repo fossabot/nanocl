@@ -89,6 +89,8 @@ async fn execute_arg(cli_args: &Cli) -> IoResult<()> {
     Command::State(args) => commands::exec_state(&cli_conf, args).await,
     Command::Version => commands::exec_version(&cli_conf).await,
     Command::Vm(args) => commands::exec_vm(&cli_conf, args).await,
+    Command::Logs(args) => commands::logs_process(&cli_conf, args).await,
+    Command::Inspect(args) => commands::inspect_process(&cli_conf, args).await,
     Command::Ps(args) => commands::exec_process(&cli_conf, args).await,
     Command::Install(args) => {
       #[cfg(not(target_os = "windows"))]
@@ -736,5 +738,94 @@ mod tests {
     assert_cli_ok!("event", "ls", "--offset", "1");
     assert_cli_ok!("event", "ls", "--limit", "2", "--offset", "1");
     assert_cli_ok!("event", "ls", "-q", "--limit", "2", "--offset", "1");
+  }
+
+  #[ntex::test]
+  async fn secret() {
+    assert_cli_ok!("secret", "ls");
+    assert_cli_ok!("secret", "ls", "-q");
+    assert_cli_err!("secret", "create", "test-cli", "tls");
+    assert_cli_ok!(
+      "secret",
+      "create",
+      "test-cli",
+      "tls",
+      "--certificate",
+      "yoloh",
+      "--certificate-key",
+      "yoloh",
+      "--certificate-client",
+      "yoloh"
+    );
+    assert_cli_ok!("secret", "ls");
+    assert_cli_ok!("secret", "ls", "-q");
+    assert_cli_ok!("secret", "rm", "-y", "test-cli");
+    assert_cli_ok!(
+      "secret",
+      "create",
+      "test-cli",
+      "tls",
+      "--certificate-path",
+      "../../tests/server.crt",
+      "--certificate-key-path",
+      "../../tests/server.key",
+      "--certificate-client-path",
+      "../../tests/ca.key"
+    );
+    assert_cli_ok!("secret", "inspect", "test-cli");
+    assert_cli_ok!("secret", "rm", "-y", "test-cli");
+  }
+
+  #[ntex::test]
+  async fn virtual_machine() {
+    assert_cli_ok!(
+      "vm",
+      "image",
+      "create",
+      "test-cli-image",
+      "../../tests/ubuntu-24.04-minimal-cloudimg-amd64.img"
+    );
+    assert_cli_err!(
+      "vm",
+      "image",
+      "create",
+      "test-cli-image",
+      "../../tests/invalid_image.img"
+    );
+    assert_cli_ok!("vm", "image", "ls");
+    assert_cli_ok!("vm", "image", "rm", "-y", "test-cli-image");
+    assert_cli_ok!(
+      "vm",
+      "image",
+      "create",
+      "test-cli-image",
+      "../../tests/ubuntu-24.04-minimal-cloudimg-amd64.img"
+    );
+    assert_cli_ok!("vm", "create", "test-cli-vm", "test-cli-image");
+    assert_cli_ok!("vm", "ls");
+    assert_cli_ok!("vm", "inspect", "test-cli-vm");
+    assert_cli_ok!("vm", "start", "test-cli-vm");
+    assert_cli_ok!("vm", "stop", "test-cli-vm");
+    assert_cli_ok!("vm", "rm", "-y", "test-cli-vm");
+    assert_cli_ok!("vm", "run", "test-cli-vm", "test-cli-image");
+    assert_cli_ok!("vm", "rm", "-y", "test-cli-vm");
+    assert_cli_ok!("vm", "image", "rm", "-y", "test-cli-image");
+  }
+
+  #[ntex::test]
+  async fn backup() {
+    assert_cli_ok!("backup", "-yo", "../../tests/backup");
+    assert_cli_ok!("backup", "-yo", "../../tests/backup");
+  }
+
+  #[ntex::test]
+  async fn logs() {
+    assert_cli_ok!("logs", "nstore.system.c");
+    assert_cli_ok!("logs", "nstore.system.c", "-s", "0");
+  }
+
+  #[ntex::test]
+  async fn inspect() {
+    assert_cli_ok!("inspect", "nstore.system.c");
   }
 }
