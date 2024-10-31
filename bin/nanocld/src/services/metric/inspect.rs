@@ -16,7 +16,8 @@ use crate::{
     ("key" = String, Path, description = "Key of the metric"),
   ),
   responses(
-    (status = 200, description = "Detailed information about a metric", body = Metric),
+    (status = 200, description = "Detailed information about a metric", body = nanocl_stubs::metric::Metric),
+    (status = 404, description = "Metric not found", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/metrics/{key}/inspect")]

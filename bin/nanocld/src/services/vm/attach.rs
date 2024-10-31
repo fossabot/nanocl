@@ -30,7 +30,7 @@ async fn ws_attach_service(
   let con_state = Rc::new(RefCell::new(WsConState::new()));
   let (tx, rx) = oneshot::channel();
   rt::spawn(utils::ws::heartbeat(con_state.clone(), sink.clone(), rx));
-  let (scmd, mut rcmd) = mpsc::channel::<Result<Bytes, web::Error>>();
+  let (s_cmd, mut r_cmd) = mpsc::channel::<Result<Bytes, web::Error>>();
   let stream = state
     .inner
     .docker_api
@@ -57,8 +57,8 @@ async fn ws_attach_service(
           break;
         }
       };
-      let outputlog: OutputLog = output.into();
-      let output = serde_json::to_vec(&outputlog);
+      let output_log: OutputLog = output.into();
+      let output = serde_json::to_vec(&output_log);
       let mut output = match output {
         Ok(output) => output,
         Err(e) => {
@@ -75,7 +75,7 @@ async fn ws_attach_service(
   });
   rt::spawn(async move {
     let mut stdin = stream.input;
-    while let Some(cmd) = rcmd.next().await {
+    while let Some(cmd) = r_cmd.next().await {
       let cmd = match cmd {
         Ok(cmd) => cmd,
         Err(e) => {
@@ -88,7 +88,7 @@ async fn ws_attach_service(
       }
     }
   });
-  // handler service for incoming websockets frames
+  // handler service for incoming websocket frames
   let service = fn_service(move |frame| {
     let item = match frame {
       ws::Frame::Ping(msg) => {
@@ -101,7 +101,7 @@ async fn ws_attach_service(
         None
       }
       ws::Frame::Text(text) => {
-        let _ = scmd.send(Ok(text));
+        let _ = s_cmd.send(Ok(text));
         None
       }
       ws::Frame::Binary(_) => None,
@@ -125,7 +125,7 @@ async fn ws_attach_service(
   path = "/vms/{name}/attach",
   params(
     ("name" = String, Path, description = "Name of the virtual machine"),
-    ("namespace" = Option<String>, Query, description = "Namespace of the virtual machine"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the virtual machine belongs default to 'global'"),
   ),
   responses(
     (status = 101, description = "Websocket connection"),

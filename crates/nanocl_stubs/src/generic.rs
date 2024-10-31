@@ -3,6 +3,9 @@ use std::{collections::HashMap, net::IpAddr};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "utoipa")]
+use bollard_next::secret::GenericResourcesInner;
+
 /// Generic namespace query filter
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -302,6 +305,7 @@ pub enum NetworkKind {
   /// Only internal ip addresses
   Internal,
   /// Specific ip address
+  #[cfg_attr(feature = "utoipa", schema(value_type = String))]
   Other(IpAddr),
 }
 
@@ -314,5 +318,140 @@ impl std::fmt::Display for NetworkKind {
       NetworkKind::Internal => write!(f, "Internal"),
       NetworkKind::Other(ip) => write!(f, "Ip({})", ip),
     }
+  }
+}
+
+#[cfg(feature = "utoipa")]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(untagged))]
+pub enum Primitive {
+  String(String),
+  Number(f64),
+  Bool(bool),
+}
+
+/// Helper to generate have Any type for [OpenApi](OpenApi) useful for dynamic json objects like [ResourceSpec](ResourceSpec)
+#[cfg(feature = "utoipa")]
+#[cfg_attr(feature = "utoipa", derive(utoipa::ToSchema))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(untagged))]
+pub enum Any {
+  String(String),
+  Number(f64),
+  Bool(bool),
+  Array(Vec<Primitive>),
+  Object(HashMap<String, Primitive>),
+}
+
+#[cfg(feature = "utoipa")]
+pub struct EmptyObject;
+
+#[cfg(feature = "utoipa")]
+impl utoipa::ToSchema for EmptyObject {
+  fn name() -> std::borrow::Cow<'static, str> {
+    "EmptyObject".into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+impl utoipa::PartialSchema for EmptyObject {
+  fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
+    utoipa::openapi::ObjectBuilder::new()
+      .title(Some("EmptyObject"))
+      .description(Some("EmptyObject"))
+      .schema_type(utoipa::openapi::schema::SchemaType::Type(
+        utoipa::openapi::Type::Object,
+      ))
+      .build()
+      .into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+pub struct GenericResources;
+
+#[cfg(feature = "utoipa")]
+impl utoipa::ToSchema for GenericResources {
+  fn name() -> std::borrow::Cow<'static, str> {
+    "GenericResources".into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+impl utoipa::PartialSchema for GenericResources {
+  fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
+    GenericResourcesInner::schema()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+pub struct BollardDate;
+
+#[cfg(feature = "utoipa")]
+impl utoipa::ToSchema for BollardDate {
+  fn name() -> std::borrow::Cow<'static, str> {
+    "BollardDate".into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+impl utoipa::PartialSchema for BollardDate {
+  fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
+    utoipa::openapi::ObjectBuilder::new()
+      .title(Some("BollardDate"))
+      .description(Some("BollardDate"))
+      .schema_type(utoipa::openapi::schema::SchemaType::Type(
+        utoipa::openapi::Type::String,
+      ))
+      .examples(["2021-01-01T00:00:00.000000000Z"])
+      .build()
+      .into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+pub struct PortMap;
+
+#[cfg(feature = "utoipa")]
+impl utoipa::ToSchema for PortMap {
+  fn name() -> std::borrow::Cow<'static, str> {
+    "PortMap".into()
+  }
+}
+
+#[cfg(feature = "utoipa")]
+impl utoipa::PartialSchema for PortMap {
+  fn schema() -> utoipa::openapi::RefOr<utoipa::openapi::schema::Schema> {
+    utoipa::openapi::ObjectBuilder::new()
+      .title(Some("PortMap"))
+      .description(Some("PortMap"))
+      .schema_type(utoipa::openapi::schema::SchemaType::Type(
+        utoipa::openapi::Type::Object,
+      ))
+      .property(
+        "<port/tcp|udp>",
+        utoipa::openapi::ArrayBuilder::new()
+          .items(
+            utoipa::openapi::ObjectBuilder::new()
+              .property(
+                "HostPort",
+                utoipa::openapi::ObjectBuilder::new()
+                  .schema_type(utoipa::openapi::schema::SchemaType::Type(
+                    utoipa::openapi::Type::String,
+                  ))
+                  .build(),
+              )
+              .property(
+                "HostIp",
+                utoipa::openapi::ObjectBuilder::new()
+                  .schema_type(utoipa::openapi::schema::SchemaType::Type(
+                    utoipa::openapi::schema::Type::String,
+                  ))
+                  .build(),
+              )
+              .build(),
+          )
+          .build(),
+      )
+      .into()
   }
 }

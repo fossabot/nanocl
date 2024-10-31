@@ -15,7 +15,7 @@ use crate::{
   tag = "Events",
   path = "/events/count",
   params(
-    ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"kind\": { \"eq\": \"CPU\" } } } }"),
+    ("filter" = Option<String>, Query, description = "Generic filter", example = "{ \"filter\": { \"where\": { \"namespace_name\": { \"eq\": \"global\" } } } }"),
   ),
   responses(
     (status = 200, description = "Count result", body = GenericCount),

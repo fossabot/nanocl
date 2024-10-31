@@ -16,8 +16,8 @@ use crate::{
     ("name" = String, Path, description = "The namespace name to inspect")
   ),
   responses(
-    (status = 200, description = "Detailed information about a namespace", body = [NamespaceInspect]),
-    (status = 404, description = "Namespace is not existing", body = ApiError),
+    (status = 200, description = "Detailed information about a namespace", body = [nanocl_stubs::namespace::NamespaceInspect]),
+    (status = 404, description = "Namespace doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/namespaces/{name}/inspect")]

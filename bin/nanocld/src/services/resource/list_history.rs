@@ -21,7 +21,7 @@ use crate::{
   ),
   responses(
     (status = 200, description = "The resource history", body = [ResourceSpec]),
-    (status = 404, description = "Resource is not existing", body = ApiError),
+    (status = 404, description = "Resource is not existing", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/resources/{name}/histories")]

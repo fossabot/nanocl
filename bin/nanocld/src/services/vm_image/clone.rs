@@ -19,7 +19,8 @@ use crate::{
     ("clone_name" = String, Path, description = "The name of the clone"),
   ),
   responses(
-    (status = 200, description = "The snapshot have been created", body = VmImage),
+    (status = 200, description = "The snapshot have been created", body = nanocl_stubs::vm_image::VmImage),
+    (status = 404, description = "The vm image does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::post("/vms/images/{name}/clone/{clone_name}")]

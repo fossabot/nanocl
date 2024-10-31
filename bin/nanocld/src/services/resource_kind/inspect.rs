@@ -15,7 +15,8 @@ use crate::models::{ResourceKindDb, SpecDb, SystemState};
     ("name" = String, Path, description = "Name of the resource kind"),
   ),
   responses(
-    (status = 200, description = "Details about a resource kind", body = ResourceKindInspect),
+    (status = 200, description = "Details about a resource kind", body = nanocl_stubs::resource_kind::ResourceKindInspect),
+    (status = 404, description = "Resource kind doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/resource/kinds/{domain}/{name}/inspect")]
@@ -28,7 +29,7 @@ pub async fn inspect_resource_kind(
   Ok(web::HttpResponse::Ok().json(&kind))
 }
 
-/// Inspect a specific version of a resource kind
+/// Get detailed information about a resource kind version
 #[cfg_attr(feature = "dev", utoipa::path(
   get,
   tag = "ResourceKinds",
@@ -36,9 +37,11 @@ pub async fn inspect_resource_kind(
   params(
     ("domain" = String, Path, description = "Domain of the resource kind"),
     ("name" = String, Path, description = "Name of the resource kind"),
+    ("version" = String, Path, description = "Version of the resource kind"),
   ),
   responses(
     (status = 200, description = "Details about a resource kind", body = ResourceKindVersion),
+    (status = 404, description = "Resource kind doesn't exist", body = crate::services::openapi::ApiError),
   ),
 ))]
 #[web::get("/resource/kinds/{domain}/{name}/version/{version}/inspect")]
