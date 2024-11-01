@@ -169,6 +169,7 @@ pub fn hook_labels(
   hooked_labels.insert("io.nanocl.kind".to_owned(), "cargo".to_owned());
   hooked_labels.insert("io.nanocl.c".to_owned(), key.to_owned());
   hooked_labels.insert("io.nanocl.n".to_owned(), namespace.to_owned());
+  hooked_labels.insert("io.nanocl.not-init-c".to_owned(), "true".to_owned());
   hooked_labels.insert(
     "com.docker.compose.project".to_owned(),
     format!("nanocl_{namespace}"),
