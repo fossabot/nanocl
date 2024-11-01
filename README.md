@@ -37,6 +37,7 @@ By empowering developers and DevOps professionals, Nanocl helps optimize workflo
 
 ## Latest news
 
+- [2024/11/01] [End to End TLS encryption and first step for network meshing](https://docs.next-hat.com/blog/nanocl-0.16) (release)
 - [2024/06/11] [Man page, Backup, Remove Orphans and more](https://docs.next-hat.com/blog/nanocl-0.15) (release)
 - [2024/06/01] [We are invited to the Merge Berlin 2024](https://www.linkedin.com/feed/update/urn:li:activity:7201921660289998850) (event)
 - [2024/05/07] [Context, SubState and more](https://docs.next-hat.com/blog/nanocl-0.14) (release)
@@ -61,14 +62,14 @@ To learn more about **Nanocl**, you can take a look at the following resources:
 There is an example used to deploy our [documentation][documentation]:
 
 ```yaml
-ApiVersion: v0.15
+ApiVersion: v0.16
 
 # See all options:
 # https://docs.next-hat.com/references/nanocl/objects/cargo
 Cargoes:
 - Name: doc
   Container:
-    Image: ghcr.io/next-hat/documentation:0.15.0
+    Image: ghcr.io/next-hat/documentation:0.16.0
 
 # See all options:
 # https://docs.next-hat.com/references/nanocl/objects/resource
