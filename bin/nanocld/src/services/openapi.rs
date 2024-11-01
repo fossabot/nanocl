@@ -1,5 +1,9 @@
 use utoipa::{Modify, OpenApi, ToSchema};
 
+use nanocl_stubs::{
+  dns::ResourceDnsRule, proxy::ResourceProxyRule, statefile::Statefile,
+};
+
 use crate::vars;
 
 use super::{
@@ -138,6 +142,7 @@ impl Modify for VersionModifier {
     event::inspect_event,
     event::count_event,
   ),
+  components(schemas(Statefile, ResourceProxyRule, ResourceDnsRule)),
   tags(
     (name = "Namespaces", description = "Namespaces management endpoints."),
     (name = "Nodes", description = "Nodes management endpoints."),
