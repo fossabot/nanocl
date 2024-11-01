@@ -67,7 +67,7 @@ async fn exec_docker(
       attributes: None,
     }),
     reason: "state_sync".to_owned(),
-    note: Some(format!("Process {name}")),
+    note: Some(format!("process {name} {action}")),
     metadata: None,
     actor: Some(EventActor {
       key: Some(name.clone()),
@@ -127,8 +127,8 @@ async fn exec_docker(
                 .await?;
             state.emit_error_native_action(
               &cargo,
-              NativeEventAction::Fail,
-              Some(format!("Process {name}")),
+              NativeEventAction::Die,
+              Some(format!("process {name} die but should be alive")),
             );
           }
           (EventActorKind::Vm, status)
@@ -144,8 +144,8 @@ async fn exec_docker(
               VmDb::transform_read_by_pk(&kind_key, &state.inner.pool).await?;
             state.emit_error_native_action(
               &vm,
-              NativeEventAction::Fail,
-              Some(format!("Process {name}")),
+              NativeEventAction::Die,
+              Some(format!("process {name} die but should be alive")),
             );
           }
           _ => {}
