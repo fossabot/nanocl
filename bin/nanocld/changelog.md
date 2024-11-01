@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.16.0] - 2024-09-03
+## [0.16.0] - 2024-11-01
+
+### Added
+
+- Mount tls secret inside cargo
+- Load environment secret inside init cargo and job
+- Inject data on cargo such as $$INTERNAL_GATEWAY
 
 ### Changed
 
@@ -14,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Missing metadata in job spec
+- Better event error handling
+- Init container was using wrong network and couldn't be started
+- Init container status
+- Init container now run every time a cargo is started
 - Status when stopping an living object (cargo, vm, job)
 
 ## [0.15.0] - 2024-06-11
