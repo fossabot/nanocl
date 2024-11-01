@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.13.0] - 2024-09-03
+## [0.13.0] - 2024-11-01
 
 ### Changed
 
 - Use of nanocld_client 0.16.0
 - Correctly choose the network for a target
+- Use `NetworkKind` to select the network to bind
+
+### Fixed
+
+- TLS proxy for end to end encryption
 
 ## [0.12.0] - 2024-06-11
 
