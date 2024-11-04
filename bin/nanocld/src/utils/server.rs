@@ -63,6 +63,7 @@ pub async fn gen(
             .unwrap();
           builder.set_certificate_chain_file(cert).unwrap();
           builder.set_ca_file(cert_ca).expect("Failed to set ca file");
+          builder.check_private_key().unwrap();
           builder.set_verify(
             SslVerifyMode::PEER | SslVerifyMode::FAIL_IF_NO_PEER_CERT,
           );

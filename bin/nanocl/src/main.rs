@@ -41,8 +41,11 @@ fn create_cli_config(cli_args: &Cli) -> IoResult<CliConfig> {
   }
   let mut ssl = match &endpoint.ssl {
     Some(ssl) => {
-      let cert = std::fs::read_to_string(ssl.cert.clone().unwrap())?;
-      let cert_key = std::fs::read_to_string(ssl.cert_key.clone().unwrap())?;
+      let cert =
+        std::fs::read_to_string(ssl.cert.clone().expect("cert file unset"))?;
+      let cert_key = std::fs::read_to_string(
+        ssl.cert_key.clone().expect("cert key file unset"),
+      )?;
       Some(SslConfig {
         cert: Some(cert),
         cert_key: Some(cert_key),
@@ -51,14 +54,16 @@ fn create_cli_config(cli_args: &Cli) -> IoResult<CliConfig> {
     }
     None => None,
   };
-  if let Ok(c) = std::env::var("CERT") {
-    if let Ok(ck) = std::env::var("CERT_KEY") {
-      ssl = Some(SslConfig {
-        cert: Some(c),
-        cert_key: Some(ck),
-        ..Default::default()
-      });
-    }
+  if let Ok(cert) = std::env::var("CERT") {
+    let cert_key = std::env::var("CERT_KEY").ok();
+    let cert_ca = std::env::var("CERT_CA").ok();
+    ssl = Some(SslConfig {
+      cert: Some(cert),
+      cert_key,
+      cert_ca: cert_ca.clone(),
+      verify: cert_ca.is_some(),
+      ..Default::default()
+    });
   }
   if let Ok(h) = std::env::var("HOST") {
     host = h;

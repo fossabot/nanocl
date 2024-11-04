@@ -177,6 +177,7 @@ services:
     # network_mode: host
     ports:
       - 8585:8585
+      - 9443:9443
     networks:
       - nanoclbr0
     labels:

@@ -17,24 +17,37 @@ use crate::config::DaemonConfig;
 #[cfg_attr(feature = "serde", serde(rename_all = "PascalCase"))]
 #[cfg_attr(feature = "clap", derive(clap::Parser))]
 pub struct SslConfig {
+  /// The certificate content
   #[cfg_attr(
     feature = "serde",
     serde(skip_serializing_if = "Option::is_none")
   )]
   #[cfg_attr(feature = "clap", clap(long))]
   pub cert: Option<String>,
+  /// The certificate key content
   #[cfg_attr(
     feature = "serde",
     serde(skip_serializing_if = "Option::is_none")
   )]
   #[cfg_attr(feature = "clap", clap(long))]
   pub cert_key: Option<String>,
+  /// The certificate authority content
   #[cfg_attr(
     feature = "serde",
     serde(skip_serializing_if = "Option::is_none")
   )]
   #[cfg_attr(feature = "clap", clap(long))]
   pub cert_ca: Option<String>,
+  /// Verify certificate authority
+  #[cfg_attr(feature = "clap", clap(long))]
+  pub verify: bool,
+  /// The certificate password if any
+  #[cfg_attr(
+    feature = "serde",
+    serde(skip_serializing_if = "Option::is_none")
+  )]
+  #[cfg_attr(feature = "clap", clap(long))]
+  pub password: Option<String>,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
