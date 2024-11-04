@@ -6936,19 +6936,32 @@ components:
       additionalProperties: false
     SslConfig:
       type: object
+      required:
+      - Verify
       properties:
         Cert:
           type:
           - string
           - 'null'
+          description: The certificate content
         CertKey:
           type:
           - string
           - 'null'
+          description: The certificate key content
         CertCa:
           type:
           - string
           - 'null'
+          description: The certificate authority content
+        Verify:
+          type: boolean
+          description: Verify certificate authority
+        Password:
+          type:
+          - string
+          - 'null'
+          description: The certificate password if any
     StartExecOptions:
       type: object
       description: Exec configuration used in the [Create Exec API](Docker::create_exec())

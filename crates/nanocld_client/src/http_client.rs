@@ -123,7 +123,25 @@ impl NanocldClient {
       use openssl::ssl::{SslConnector, SslMethod, SslVerifyMode};
       if let Some(ssl) = &self.ssl {
         let mut builder = SslConnector::builder(SslMethod::tls()).unwrap();
-        builder.set_verify(SslVerifyMode::PEER);
+        if ssl.verify {
+          builder.set_verify(
+            SslVerifyMode::PEER | SslVerifyMode::FAIL_IF_NO_PEER_CERT,
+          );
+          let cert_ca = openssl::x509::X509::from_pem(
+            ssl.cert_ca.clone().expect("Ssl.ca to be fill").as_bytes(),
+          )
+          .expect("Invalid ssl cert ca");
+          // Create an X509Store and add the certificate
+          let mut store_builder = openssl::x509::store::X509StoreBuilder::new()
+            .expect("Failed to create X509 store builder");
+          store_builder
+            .add_cert(cert_ca)
+            .expect("Failed to add CA certificate to store");
+          let store = store_builder.build();
+          builder.set_cert_store(store);
+        } else {
+          builder.set_verify(SslVerifyMode::NONE);
+        }
         let cert = openssl::x509::X509::from_pem(
           ssl.cert.clone().expect("Ssl.cert to be fill").as_bytes(),
         )
