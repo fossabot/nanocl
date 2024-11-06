@@ -14,8 +14,10 @@ members = [
 
 [profile.dev]
 opt-level = 0
+incremental = true
 
 [profile.release]
+incremental = true
 strip = true
 opt-level = "z"
 lto = true

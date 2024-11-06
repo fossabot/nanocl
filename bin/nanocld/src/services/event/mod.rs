@@ -105,5 +105,7 @@ mod tests {
     let _ = client
       .send_delete(&format!("/cargoes/{CARGO_NAME}"), None::<String>)
       .await;
+    ntex::time::sleep(std::time::Duration::from_secs(1)).await;
+    system.state.wait_event_loop().await;
   }
 }

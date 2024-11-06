@@ -1,4 +1,4 @@
-ApiVersion: v0.14
+ApiVersion: v0.16
 
 Namespace: cargo-bind-test
 
@@ -12,4 +12,4 @@ Cargoes:
       Binds:
       - /tmp/toto:/tata
       - ./toto:/toto
-      - dsa:/titi
+      - nanocl-test-named-volume:/titi
