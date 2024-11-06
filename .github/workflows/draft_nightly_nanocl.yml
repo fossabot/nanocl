@@ -190,7 +190,7 @@ jobs:
           Get-ChildItem C:\vcpkg\installed\x64-windows\lib
       - name: Package
         run: |
-          $env:RUSTFLAGS="-C target-feature=+crt-static"
+          $env:RUSTFLAGS="-C target-feature=+crt-static -LC:\vcpkg\installed\x64-windows\lib"
           cargo build --release --target x86_64-pc-windows-msvc --features vendored --features release --bin $env:BINARY_NAME
           mkdir -p target/windows
           mkdir -p target/windows/bin
