@@ -111,6 +111,7 @@ jobs:
       - name: Package
         run: |
           export RUSTFLAGS="-C target-feature=+crt-static"
+          export PQ_LIB_DIR="$(brew --prefix libpq)/lib"
           cargo build --release --target aarch64-apple-darwin --bin $BINARY_NAME
           mkdir -p target/macos
           cp target/aarch64-apple-darwin/release/$BINARY_NAME target/macos/$BINARY_NAME
