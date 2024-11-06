@@ -13,7 +13,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release_image:
+  release_nanocl_bin_linux:
     runs-on: ubuntu-latest
     container: rust:1.82.0-alpine3.20
 
@@ -78,5 +78,61 @@ jobs:
           gh release upload \
             $BINARY_NAME-$VERSION-$CHANNEL \
             target/linux/${BINARY_NAME}_${VERSION}_amd64.tar.gz#nanocl_amd64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+  release_nanocl_bin_macos:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: 1.82.0-aarch64-apple-darwin
+      - name: Set info
+        run: |
+          echo "CHANNEL=$(echo ${GITHUB_REF} | awk -F/ '{print $4}')" >> $GITHUB_ENV
+          echo "NANOCL_CHANNEL=$(echo ${GITHUB_REF} | awk -F/ '{print $4}')" >> $GITHUB_ENV
+          echo "BINARY_NAME=$(echo ${GITHUB_REF} | awk -F/ '{print $6}')" >> $GITHUB_ENV
+          echo "VERSION=$(echo ${GITHUB_REF} | awk -F/ '{print $7}')" >> $GITHUB_ENV
+      - name: Print Info
+        run: |
+          echo $BRANCH_NAME
+          echo $BINARY_NAME
+          echo $CHANNEL
+          echo $VERSION
+      - name: Package
+        run: |
+          export RUSTFLAGS="-C target-feature=+crt-static"
+          cargo build --release --target aarch64-apple-darwin --bin $BINARY_NAME
+          mkdir -p target/macos
+          cp target/aarch64-apple-darwin/release/$BINARY_NAME target/macos/$BINARY_NAME
+          tar -czf target/macos/${BINARY_NAME}_${VERSION}_aarch64.tar.gz -C target/macos $BINARY_NAME
+      - name: Test if release already exists
+        id: release-exists
+        continue-on-error: true
+        run: gh release view $BINARY_NAME-$VERSION-$CHANNEL
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+      - name: Create new draft release
+        if: steps.release-exists.outcome == 'failure' && steps.release-exists.conclusion == 'success'
+        run: |
+          gh release create -d \
+            $BINARY_NAME-$VERSION-$CHANNEL \
+            -t $BINARY_NAME-$VERSION-$CHANNEL \
+            -F ./bin/$BINARY_NAME/changelog.md \
+            target/macos/${BINARY_NAME}_${VERSION}_aarch64.tar.gz#nanocl_aarch64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+      - name: Update draft release
+        if: steps.release-exists.outcome == 'success' && steps.release-exists.conclusion == 'success'
+        run: |
+          gh release delete-asset -y \
+            $BINARY_NAME-$VERSION-$CHANNEL \
+            ${BINARY_NAME}_${VERSION}_aarch64.tar.gz || true
+          gh release upload \
+            $BINARY_NAME-$VERSION-$CHANNEL \
+            target/macos/${BINARY_NAME}_${VERSION}_aarch64.tar.gz#nanocl_aarch64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
