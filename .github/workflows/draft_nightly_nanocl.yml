@@ -18,7 +18,8 @@ jobs:
     container: rust:1.82.0-alpine3.20
 
     steps:
-      # Install required dependencies
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Install dependencies
         run: |
           apk add --update alpine-sdk musl-dev g++ make libpq-dev openssl-dev git perl build-base dpkg pandoc github-cli
@@ -68,7 +69,7 @@ jobs:
         run: |
           gh release delete-asset -y \
             $BINARY_NAME-$VERSION-$CHANNEL \
-            ${BINARY_NAME}_${VERSION}_linux_amd64.deb || true
+            ${BINARY_NAME}_${VERSION}_amd64.deb || true
           gh release delete-asset -y \
             $BINARY_NAME-$VERSION-$CHANNEL \
             ${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz || true
