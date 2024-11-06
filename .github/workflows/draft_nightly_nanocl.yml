@@ -165,16 +165,21 @@ jobs:
           toolchain: 1.82.0-x86_64-pc-windows-msvc
       - name: Set info
         run: |
-          echo "CHANNEL=$(echo ${GITHUB_REF} | awk -F/ '{print $4}')" >> $GITHUB_ENV
-          echo "NANOCL_CHANNEL=$(echo ${GITHUB_REF} | awk -F/ '{print $4}')" >> $GITHUB_ENV
-          echo "BINARY_NAME=$(echo ${GITHUB_REF} | awk -F/ '{print $6}')" >> $GITHUB_ENV
-          echo "VERSION=$(echo ${GITHUB_REF} | awk -F/ '{print $7}')" >> $GITHUB_ENV
+          $GITHUB_REF = "${{ github.ref }}"
+          $CHANNEL = ($GITHUB_REF -split "/")[3]
+          $NANOCL_CHANNEL = $CHANNEL
+          $BINARY_NAME = ($GITHUB_REF -split "/")[5]
+          $VERSION = ($GITHUB_REF -split "/")[6]
+          Add-Content -Path $env:GITHUB_ENV -Value "CHANNEL=$CHANNEL"
+          Add-Content -Path $env:GITHUB_ENV -Value "NANOCL_CHANNEL=$NANOCL_CHANNEL"
+          Add-Content -Path $env:GITHUB_ENV -Value "BINARY_NAME=$BINARY_NAME"
+          Add-Content -Path $env:GITHUB_ENV -Value "VERSION=$VERSION"
       - name: Print Info
         run: |
-          echo $BRANCH_NAME
-          echo $BINARY_NAME
-          echo $CHANNEL
-          echo $VERSION
+          Write-Output "BRANCH_NAME=$env:BRANCH_NAME"
+          Write-Output "BINARY_NAME=$env:BINARY_NAME"
+          Write-Output "CHANNEL=$env:CHANNEL"
+          Write-Output "VERSION=$env:VERSION"
       - name: Install dependencies
         run: |
           vcpkg integrate install
