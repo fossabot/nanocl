@@ -102,6 +102,12 @@ jobs:
           echo $BINARY_NAME
           echo $CHANNEL
           echo $VERSION
+      - name: Install dependencies
+        run: |
+          brew install openssl
+          brew link --force openssl
+          brew install libpq
+          brew link --force libpq
       - name: Package
         run: |
           export RUSTFLAGS="-C target-feature=+crt-static"
