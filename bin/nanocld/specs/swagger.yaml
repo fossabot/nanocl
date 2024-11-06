@@ -24,12 +24,12 @@ info:
     email: team@next-hat.com
   license:
     name: MIT OR Apache-2.0
-  version: v0.16.0
+  version: v0.16.1
 servers:
 - url: /{Version}
   variables:
     Version:
-      default: v0.16.0
+      default: v0.16.1
       description: API version
 paths:
   /_ping:
