@@ -201,7 +201,7 @@ jobs:
           #   gzip <"$file" >target/windows/share/man/man1/"$file_name".gz
           # done
           cp target/x86_64-pc-windows-msvc/release/$env:BINARY_NAME.exe target/windows/bin/$env:BINARY_NAME.exe
-          tar -czf target/windows/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C target/windows ((ls -n) -split "`n" -join " ")
+          tar -czf $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C target/windows .
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
@@ -215,7 +215,7 @@ jobs:
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
             -t $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
             -F ./bin/$env:BINARY_NAME/changelog.md `
-            target/windows/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
+            $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
             --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -227,6 +227,6 @@ jobs:
             $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz || true
           gh release upload `
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
-            target/windows/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
+            $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
