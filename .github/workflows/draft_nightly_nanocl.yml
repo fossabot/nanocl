@@ -122,7 +122,7 @@ jobs:
             gzip <"$file" >target/macos/share/man/man1/"$file_name".gz
           done
           cp target/aarch64-apple-darwin/release/$BINARY_NAME target/macos/bin/$BINARY_NAME
-          tar -czf target/macos/${BINARY_NAME}_${VERSION}_aarch64.tar.gz -C target/macos $BINARY_NAME
+          tar -czf target/macos/${BINARY_NAME}_${VERSION}_aarch64.tar.gz -C target/macos
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
