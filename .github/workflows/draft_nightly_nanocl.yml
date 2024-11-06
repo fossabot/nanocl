@@ -201,7 +201,7 @@ jobs:
           #   gzip <"$file" >target/windows/share/man/man1/"$file_name".gz
           # done
           cp target/x86_64-pc-windows-msvc/release/$env:BINARY_NAME.exe target/windows/bin/$env:BINARY_NAME.exe
-          tar -czf target/windows/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C target/windows .
+          tar -czf target/windows/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C target/windows ((ls -n) -split "`n" -join " ")
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
