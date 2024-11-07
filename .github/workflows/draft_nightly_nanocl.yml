@@ -191,7 +191,7 @@ jobs:
       - name: Package
         run: |
           $env:RUSTFLAGS="-C target-feature=+crt-static -LC:\vcpkg\installed\x64-windows\lib"
-          cargo build --release --target x86_64-pc-windows-msvc --features vendored --features release --bin $(env:BINARY_NAME)
+          cargo build --release --target x86_64-pc-windows-msvc --features vendored --features release --bin $($env:BINARY_NAME)
           mkdir -p target/windows
           mkdir -p target/windows/bin
           # mkdir -p target/windows/share/man/man1
@@ -200,22 +200,22 @@ jobs:
           #   file_name=$(basename "${file}")
           #   gzip <"$file" >target/windows/share/man/man1/"$file_name".gz
           # done
-          cp target/x86_64-pc-windows-msvc/release/$(env:BINARY_NAME).exe target/windows/bin/$(env:BINARY_NAME).exe
-          tar -czf target/windows/$(env:BINARY_NAME)_$(env:VERSION)_windows_amd64.tar.gz -C target/windows $(ls target/windows)
+          cp target/x86_64-pc-windows-msvc/release/$($env:BINARY_NAME).exe target/windows/bin/$($env:BINARY_NAME).exe
+          tar -czf target/windows/$($env:BINARY_NAME)_$($env:VERSION)_windows_amd64.tar.gz -C target/windows $(ls target/windows)
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
-        run: gh release view $(env:BINARY_NAME)-$(env:VERSION)-$(env:CHANNEL)
+        run: gh release view $($env:BINARY_NAME)-$($env:VERSION)-$($env:CHANNEL)
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
       - name: Create new draft release
         if: steps.release-exists.outcome == 'failure' && steps.release-exists.conclusion == 'success'
         run: |
           gh release create -d `
-            $(env:BINARY_NAME)-$(env:VERSION)-$(env:CHANNEL) `
-            -t $(env:BINARY_NAME)-$(env:VERSION)-$(env:CHANNEL) `
-            -F ./bin/$(env:BINARY_NAME)/changelog.md `
-            target/windows/$(env:BINARY_NAME)_$(env:VERSION)_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
+            $($env:BINARY_NAME)-$($env:VERSION)-$($env:CHANNEL) `
+            -t $($env:BINARY_NAME)-$($env:VERSION)-$($env:CHANNEL) `
+            -F ./bin/$($env:BINARY_NAME)/changelog.md `
+            target/windows/$($env:BINARY_NAME)_$($env:VERSION)_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
             --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -223,10 +223,10 @@ jobs:
         if: steps.release-exists.outcome == 'success' && steps.release-exists.conclusion == 'success'
         run: |
           gh release delete-asset -y `
-            $(env:BINARY_NAME)-$(env:VERSION)-$(env:CHANNEL) `
-            $(env:BINARY_NAME)_$(env:VERSION)_windows_amd64.tar.gz || true
+            $($env:BINARY_NAME)-$($env:VERSION)-$($env:CHANNEL) `
+            $($env:BINARY_NAME)_$($env:VERSION)_windows_amd64.tar.gz || true
           gh release upload `
-            $(env:BINARY_NAME)-$(env:VERSION)-$(env:CHANNEL) `
-            target/windows/$(env:BINARY_NAME)_$(env:VERSION)_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
+            $($env:BINARY_NAME)-$($env:VERSION)-$($env:CHANNEL) `
+            target/windows/$($env:BINARY_NAME)_$($env:VERSION)_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
