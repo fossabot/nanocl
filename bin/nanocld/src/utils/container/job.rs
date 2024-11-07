@@ -70,10 +70,7 @@ async fn create_instance(
 
 /// Create processes (container) for a job
 ///
-pub async fn create_instances(
-  job: &Job,
-  state: &SystemState,
-) -> IoResult<Vec<Process>> {
+pub async fn create(job: &Job, state: &SystemState) -> IoResult<Vec<Process>> {
   let mut processes = Vec::new();
   for (index, container) in job.containers.iter().enumerate() {
     super::image::download(
@@ -97,7 +94,7 @@ pub async fn start(key: &str, state: &SystemState) -> IoResult<()> {
   let mut processes =
     ProcessDb::read_by_kind_key(&job.name, None, &state.inner.pool).await?;
   if processes.is_empty() {
-    processes = create_instances(&job, state).await?;
+    processes = create(&job, state).await?;
   }
   ObjPsStatusDb::update_actual_status(
     key,

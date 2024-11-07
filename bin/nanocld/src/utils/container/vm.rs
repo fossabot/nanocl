@@ -18,7 +18,7 @@ use crate::{
 
 /// Create a VM instance
 ///
-pub async fn create_instance(
+pub async fn create(
   vm: &Vm,
   image: &VmImageDb,
   disable_keygen: bool,
@@ -145,7 +145,7 @@ pub async fn start(key: &str, state: &SystemState) -> IoResult<()> {
     ProcessDb::read_by_kind_key(&vm.spec.vm_key, None, &state.inner.pool)
       .await?;
   if processes.is_empty() {
-    create_instance(&vm, &image, true, state).await?;
+    create(&vm, &image, true, state).await?;
   }
   super::process::start_instances(&vm.spec.vm_key, &ProcessKind::Vm, state)
     .await?;
@@ -182,7 +182,7 @@ pub async fn update(key: &str, state: &SystemState) -> IoResult<()> {
   let image =
     VmImageDb::read_by_pk(&vm.spec.disk.image, &state.inner.pool).await?;
   super::process::delete_instances(&[container_name], state).await?;
-  create_instance(&vm, &image, false, state).await?;
+  create(&vm, &image, false, state).await?;
   super::process::start_instances(key, &ProcessKind::Vm, state).await?;
   Ok(())
 }
