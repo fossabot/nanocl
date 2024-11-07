@@ -5,6 +5,31 @@ use nanocl_stubs::{cargo::CargoKillOptions, generic::GenericNspQuery};
 
 use crate::{models::SystemState, utils};
 
+/// Send a signal to a specific process instance
+#[cfg_attr(feature = "dev", utoipa::path(
+  post,
+  tag = "Processes",
+  request_body = CargoKillOptions,
+  path = "/processes/{name}/kill",
+  params(
+    ("name" = String, Path, description = "Name of the process", example = "ndaemon.system.c"),
+  )
+))]
+#[web::post("/processes/{name}/kill")]
+pub async fn kill_process(
+  state: web::types::State<SystemState>,
+  path: web::types::Path<(String, String)>,
+  payload: web::types::Json<CargoKillOptions>,
+) -> HttpResult<web::HttpResponse> {
+  let (_, name) = path.into_inner();
+  state
+    .inner
+    .docker_api
+    .kill_container(&name, Some(payload.clone().into()))
+    .await?;
+  Ok(web::HttpResponse::Ok().into())
+}
+
 /// Send a signal to all processes of given kind and name (cargo, job, vm)
 #[cfg_attr(feature = "dev", utoipa::path(
   post,

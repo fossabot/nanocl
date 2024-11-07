@@ -5,6 +5,32 @@ use nanocl_stubs::generic::GenericNspQuery;
 
 use crate::{models::SystemState, utils};
 
+/// Restart a specific process instance
+#[cfg_attr(feature = "dev", utoipa::path(
+  post,
+  tag = "Processes",
+  path = "/processes/{name}/restart",
+  params(
+    ("name" = String, Path, description = "Name of the process"),
+  ),
+  responses(
+    (status = 202, description = "Process instance restarted"),
+  ),
+))]
+#[web::post("/processes/{name}/restart")]
+pub async fn restart_process(
+  state: web::types::State<SystemState>,
+  path: web::types::Path<(String, String)>,
+) -> HttpResult<web::HttpResponse> {
+  let (_, name) = path.into_inner();
+  state
+    .inner
+    .docker_api
+    .restart_container(&name, None)
+    .await?;
+  Ok(web::HttpResponse::Accepted().finish())
+}
+
 /// Restart all processes of given kind and name (cargo, job, vm)
 #[cfg_attr(feature = "dev", utoipa::path(
   post,

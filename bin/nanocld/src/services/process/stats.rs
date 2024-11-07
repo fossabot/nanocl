@@ -10,6 +10,31 @@ use crate::{
   utils,
 };
 
+#[cfg_attr(feature = "dev", utoipa::path(
+  get,
+  tag = "Processes",
+  path = "/processes/stats",
+  params(
+    ("kind" = String, Path, description = "Kind of process", example = "cargo"),
+    ("name" = String, Path, description = "Name of the process group", example = "deploy-example"),
+    ("namespace" = Option<String>, Query, description = "Namespace where the process belongs if needed"),
+    ("stream" = Option<bool>, Query, description = "Return a stream of stats"),
+    ("one_shot" = Option<bool>, Query, description = "Return stats only once"),
+  ),
+  responses(
+    (status = 200, description = "Process stats", content_type = "application/vdn.nanocl.raw-stream", body = ProcessStats),
+    (status = 404, description = "Process does not exist", body = crate::services::openapi::ApiError),
+  )
+))]
+#[web::get("/processes/{name}/stats")]
+pub async fn stats_process(
+  state: web::types::State<SystemState>,
+  path: web::types::Path<(String, String, String)>,
+  qs: web::types::Query<ProcessStatsQuery>,
+) -> HttpResult<web::HttpResponse> {
+  Ok(web::HttpResponse::Ok().finish())
+}
+
 /// Get stats of all processes of given kind and name (cargo, job, vm)
 #[cfg_attr(feature = "dev", utoipa::path(
   get,

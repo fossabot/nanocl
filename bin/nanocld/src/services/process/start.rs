@@ -14,15 +14,15 @@ use crate::{
 #[cfg_attr(feature = "dev", utoipa::path(
   post,
   tag = "Processes",
-  path = "/processes/{pk}/start",
+  path = "/processes/{name}/start",
   params(
-    ("pk" = String, Path, description = "Pk of the process", example = "1234567890"),
+    ("name" = String, Path, description = "Name of the process", example = "ndaemon.system.c"),
   ),
   responses(
-    (status = 202, description = "Process instances started"),
+    (status = 202, description = "Process started"),
   ),
 ))]
-#[web::post("/processes/{pk}/start")]
+#[web::post("/processes/{name}/start")]
 pub async fn start_process_by_pk(
   state: web::types::State<SystemState>,
   path: web::types::Path<(String, String)>,
@@ -38,6 +38,9 @@ pub async fn start_process_by_pk(
 }
 
 /// Start all processes of given kind and name (cargo, job, vm)
+/// This emit and event to start all instances of a process and will return before the process is actually started
+/// The reason is if we have 1000 instances of a process, we don't want to wait for all of them to start it may result in a timeout
+///
 #[cfg_attr(feature = "dev", utoipa::path(
   post,
   tag = "Processes",
@@ -48,7 +51,7 @@ pub async fn start_process_by_pk(
     ("namespace" = Option<String>, Query, description = "Namespace where the process belongs if needed"),
   ),
   responses(
-    (status = 202, description = "Process instances started"),
+    (status = 202, description = "Process instances starting"),
   ),
 ))]
 #[web::post("/processes/{kind}/{name}/start")]

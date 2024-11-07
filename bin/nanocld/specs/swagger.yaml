@@ -1142,7 +1142,10 @@ paths:
     post:
       tags:
       - Processes
-      summary: Start all processes of given kind and name (cargo, job, vm)
+      summary: |-
+        Start all processes of given kind and name (cargo, job, vm)
+        This emit and event to start all instances of a process and will return before the process is actually started
+        The reason is if we have 1000 instances of a process, we don't want to wait for all of them to start it may result in a timeout
       operationId: start_processes
       parameters:
       - name: kind
@@ -1169,7 +1172,7 @@ paths:
           - 'null'
       responses:
         '202':
-          description: Process instances started
+          description: Process instances starting
   /processes/{kind}/{name}/stats:
     get:
       tags:
@@ -1378,23 +1381,23 @@ paths:
           description: Process instances logs
           content:
             application/vdn.nanocl.raw-stream: {}
-  /processes/{pk}/start:
+  /processes/{name}/start:
     post:
       tags:
       - Processes
       summary: Start a single process by it's name or id
       operationId: start_process_by_pk
       parameters:
-      - name: pk
+      - name: name
         in: path
-        description: Pk of the process
+        description: Name of the process
         required: true
         schema:
           type: string
-        example: '1234567890'
+        example: ndaemon.system.c
       responses:
         '202':
-          description: Process instances started
+          description: Process started
   /resource/kinds:
     get:
       tags:
