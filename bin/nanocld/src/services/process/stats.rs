@@ -1,7 +1,7 @@
 use futures::{stream::select_all, StreamExt, TryStreamExt};
 use ntex::web;
 
-use bollard_next::container::StatsOptions;
+use bollard_next::container::{Stats, StatsOptions};
 use nanocl_error::http::{HttpError, HttpResult};
 use nanocl_stubs::process::{ProcessStats, ProcessStatsQuery};
 
@@ -10,6 +10,7 @@ use crate::{
   utils,
 };
 
+/// Get stats of a single process instance
 #[cfg_attr(feature = "dev", utoipa::path(
   get,
   tag = "Processes",
@@ -22,17 +23,23 @@ use crate::{
     ("one_shot" = Option<bool>, Query, description = "Return stats only once"),
   ),
   responses(
-    (status = 200, description = "Process stats", content_type = "application/vdn.nanocl.raw-stream", body = ProcessStats),
+    (status = 200, description = "Process stats", content_type = "application/vdn.nanocl.raw-stream", body = bollard_next::container::Stats),
     (status = 404, description = "Process does not exist", body = crate::services::openapi::ApiError),
   )
 ))]
 #[web::get("/processes/{name}/stats")]
 pub async fn stats_process(
   state: web::types::State<SystemState>,
-  path: web::types::Path<(String, String, String)>,
+  path: web::types::Path<(String, String)>,
   qs: web::types::Query<ProcessStatsQuery>,
 ) -> HttpResult<web::HttpResponse> {
-  Ok(web::HttpResponse::Ok().finish())
+  let opts: StatsOptions = qs.clone().into();
+  let stream = state.inner.docker_api.stats(&path.1, Some(opts));
+  Ok(
+    web::HttpResponse::Ok()
+      .content_type("application/vdn.nanocl.raw-stream")
+      .streaming(utils::stream::transform_stream::<Stats, Stats>(stream)),
+  )
 }
 
 /// Get stats of all processes of given kind and name (cargo, job, vm)

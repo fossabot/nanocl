@@ -28,10 +28,13 @@ pub fn ntex_config(config: &mut web::ServiceConfig) {
   config.service(list_processes);
   config.service(logs_processes);
   config.service(restart_processes);
+  config.service(start_process);
   config.service(start_processes);
   config.service(stop_processes);
+  config.service(kill_process);
   config.service(kill_processes);
   config.service(wait_processes);
+  config.service(stats_process);
   config.service(stats_processes);
   config.service(count_processes);
 }

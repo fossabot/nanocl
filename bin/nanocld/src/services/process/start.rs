@@ -23,7 +23,7 @@ use crate::{
   ),
 ))]
 #[web::post("/processes/{name}/start")]
-pub async fn start_process_by_pk(
+pub async fn start_process(
   state: web::types::State<SystemState>,
   path: web::types::Path<(String, String)>,
 ) -> HttpResult<web::HttpResponse> {

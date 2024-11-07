@@ -22,7 +22,7 @@ use crate::{
     ("name" = String, Path, description = "Name of the process instance"),
   ),
   responses(
-    (status = 200, description = "Process wait stream", content_type = "application/vdn.nanocl.raw-stream"),
+    (status = 200, description = "Process wait stream", content_type = "application/vdn.nanocl.raw-stream", body = ProcessWaitResponse),
     (status = 404, description = "Process does not exist", body = crate::services::openapi::ApiError),
   ),
 ))]
