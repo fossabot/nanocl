@@ -1,6 +1,7 @@
 use ntex::web;
 
 pub mod count;
+pub mod create;
 pub mod inspect;
 pub mod kill;
 pub mod list;
@@ -12,6 +13,7 @@ pub mod stop;
 pub mod wait;
 
 pub use count::*;
+pub use create::*;
 pub use inspect::*;
 pub use kill::*;
 pub use list::*;
@@ -23,16 +25,20 @@ pub use stop::*;
 pub use wait::*;
 
 pub fn ntex_config(config: &mut web::ServiceConfig) {
-  config.service(logs_process);
+  config.service(create_process);
   config.service(inspect_process);
-  config.service(list_processes);
+  config.service(logs_process);
   config.service(logs_processes);
+  config.service(list_processes);
+  config.service(restart_process);
   config.service(restart_processes);
   config.service(start_process);
   config.service(start_processes);
+  config.service(stop_process);
   config.service(stop_processes);
   config.service(kill_process);
   config.service(kill_processes);
+  config.service(wait_process);
   config.service(wait_processes);
   config.service(stats_process);
   config.service(stats_processes);

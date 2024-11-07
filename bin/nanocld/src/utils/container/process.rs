@@ -17,7 +17,7 @@ use crate::{
   repositories::generic::*,
 };
 
-/// Create a process (container) based on the kind and the item
+/// Create a process (container) based on the kind of the item
 pub async fn create(
   kind: &ProcessKind,
   name: &str,

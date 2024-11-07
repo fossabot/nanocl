@@ -24,7 +24,7 @@ use crate::{
     ("tail" = Option<String>, Query, description = "Only return the n last (integer) or all ('all') logs"),
   ),
   responses(
-    (status = 200, description = "Process instances logs", content_type = "application/vdn.nanocl.raw-stream"),
+    (status = 200, description = "Process instances logs", content_type = "application/vdn.nanocl.raw-stream", body = ProcessOutputLog),
   ),
 ))]
 #[web::get("/processes/{name}/logs")]
@@ -34,7 +34,6 @@ async fn logs_process(
   qs: web::types::Query<ProcessLogQuery>,
 ) -> HttpResult<web::HttpResponse> {
   let (_, name) = path.into_inner();
-  log::debug!("process::logs_process: {name}");
   let options: LogsOptions<String> = qs.into_inner().into();
   let stream = state
     .inner
