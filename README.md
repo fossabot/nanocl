@@ -159,28 +159,39 @@ You can also help us by contributing to the project, by reporting bugs, by sugge
 
 <table>
   <tr>
-  <td align="center">
-    <a href="https://github.com/mamaicode">
-      <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/102310764?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="mamaicode" />
-      <br />
-      <sub>
-        <b>
-          mamaicode
-        </b>
-      </sub>
-    </a>
-  </td>
-  <td align="center">
-    <a href="https://github.com/xf10w">
-      <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/43791027?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="xf10w" />
-      <br />
-      <sub>
-        <b>
-          xf10w
-        </b>
-      </sub>
-    </a>
-  </td>
+    <td align="center">
+      <a href="https://github.com/mamaicode">
+        <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/102310764?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="mamaicode" />
+        <br />
+        <sub>
+          <b>
+            mamaicode
+          </b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/xf10w">
+        <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/43791027?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="xf10w" />
+        <br />
+        <sub>
+          <b>
+            xf10w
+          </b>
+        </sub>
+      </a>
+    </td>
+        <td align="center">
+      <a href="https://github.com/xf10w">
+        <img src="https://images.weserv.nl/?url=avatars.githubusercontent.com/u/142700635?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" width="100" alt="Rembo1510" />
+        <br />
+        <sub>
+          <b>
+            Rembo1510
+          </b>
+        </sub>
+      </a>
+    </td>
   </tr>
 </table>
 
