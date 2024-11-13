@@ -199,7 +199,7 @@ jobs:
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
-        run: gh release view ($env:BINARY_NAME)-($env:VERSION)-($env:CHANNEL)
+        run: gh release view $env:BINARY_NAME-$env:VERSION-$env:CHANNEL
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
       - name: Create new draft release
