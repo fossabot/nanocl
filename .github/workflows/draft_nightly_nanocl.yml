@@ -60,8 +60,8 @@ jobs:
             $BINARY_NAME-$VERSION-$CHANNEL \
             -t $BINARY_NAME-$VERSION-$CHANNEL \
             -F ./bin/$BINARY_NAME/changelog.md \
-            target/debian/${BINARY_NAME}_${VERSION}_amd64.deb#nanocl_amd64.deb \
-            target/${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz#nanocl_linux_amd64.tar.gz \
+            release/debian/${BINARY_NAME}_${VERSION}_amd64.deb#nanocl_amd64.deb \
+            release/${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz#nanocl_linux_amd64.tar.gz \
             --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -76,10 +76,10 @@ jobs:
             ${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz || true
           gh release upload \
             $BINARY_NAME-$VERSION-$CHANNEL \
-            target/debian/${BINARY_NAME}_${VERSION}_amd64.deb#nanocl_amd64.deb
+            release/debian/${BINARY_NAME}_${VERSION}_amd64.deb#nanocl_amd64.deb
           gh release upload \
             $BINARY_NAME-$VERSION-$CHANNEL \
-            target/${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz#nanocl_linux_amd64.tar.gz
+            release/${BINARY_NAME}_${VERSION}_linux_amd64.tar.gz#nanocl_linux_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -115,16 +115,16 @@ jobs:
           export RUSTFLAGS="-C target-feature=+crt-static -L /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib"
           export PQ_LIB_DIR="$(brew --prefix libpq)/lib"
           cargo build --release --target aarch64-apple-darwin --features vendored --features release --bin $BINARY_NAME
-          mkdir -p target/mac
-          mkdir -p target/mac/bin
-          mkdir -p target/mac/share/man/man1
+          mkdir -p release/mac
+          mkdir -p release/mac/bin
+          mkdir -p release/mac/share/man/man1
           # Generate man pages
           for file in ./bin/nanocl/target/man/*; do
             file_name=$(basename "${file}")
-            gzip <"$file" >target/mac/share/man/man1/"$file_name".gz
+            gzip <"$file" >release/mac/share/man/man1/"$file_name".gz
           done
-          cp target/aarch64-apple-darwin/release/$BINARY_NAME target/mac/bin/$BINARY_NAME
-          tar -czf target/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz -C target/mac .
+          cp target/aarch64-apple-darwin/release/$BINARY_NAME release/mac/bin/$BINARY_NAME
+          tar -czf release/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz -C release/mac .
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
@@ -138,7 +138,7 @@ jobs:
             $BINARY_NAME-$VERSION-$CHANNEL \
             -t $BINARY_NAME-$VERSION-$CHANNEL \
             -F ./bin/$BINARY_NAME/changelog.md \
-            target/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz#nanocl_mac_aarch64.tar.gz \
+            release/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz#nanocl_mac_aarch64.tar.gz \
             --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -150,7 +150,7 @@ jobs:
             ${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz || true
           gh release upload \
             $BINARY_NAME-$VERSION-$CHANNEL \
-            target/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz#nanocl_mac_aarch64.tar.gz
+            release/${BINARY_NAME}_${VERSION}_mac_aarch64.tar.gz#nanocl_mac_aarch64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
@@ -192,16 +192,10 @@ jobs:
         run: |
           $env:RUSTFLAGS="-C target-feature=+crt-static -LC:\vcpkg\installed\x64-windows\lib"
           cargo build --release --target x86_64-pc-windows-msvc --features vendored --features release --bin $env:BINARY_NAME
-          mkdir -p target/windows
-          mkdir -p target/windows/bin
-          # mkdir -p target/windows/share/man/man1
-          # TODO: Generate man pages for windows
-          # for file in ./bin/nanocl/target/man/*; do
-          #   file_name=$(basename "${file}")
-          #   gzip <"$file" >target/windows/share/man/man1/"$file_name".gz
-          # done
-          cp target/x86_64-pc-windows-msvc/release/$env:BINARY_NAME.exe target/windows/bin/$env:BINARY_NAME.exe
-          tar -czf target/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C target/windows .
+          mkdir -p release/windows
+          mkdir -p release/windows/bin
+          cp release/x86_64-pc-windows-msvc/release/$env:BINARY_NAME.exe release/windows/bin/$env:BINARY_NAME.exe
+          tar -czf release/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz -C release/windows .
       - name: Test if release already exists
         id: release-exists
         continue-on-error: true
@@ -215,7 +209,7 @@ jobs:
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
             -t $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
             -F ./bin/$env:BINARY_NAME/changelog.md `
-            target/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
+            release/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz `
             --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
@@ -227,6 +221,6 @@ jobs:
             $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz || true
           gh release upload `
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
-            target/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
+            release/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
