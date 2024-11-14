@@ -218,7 +218,7 @@ jobs:
         run: |
           gh release delete-asset -y `
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
-            $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz || exit /b 0
+            $env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz || true
           gh release upload `
             $env:BINARY_NAME-$env:VERSION-$env:CHANNEL `
             release/$env:BINARY_NAME_$env:VERSION_windows_amd64.tar.gz#nanocl_windows_amd64.tar.gz
