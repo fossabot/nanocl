@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          apk add --update alpine-sdk musl-dev g++ make libpq-dev openssl-dev git perl build-base dpkg pandoc github-cli
-          rustup target add x86_64-unknown-linux-musl bash
+          apk add --update alpine-sdk musl-dev g++ make libpq-dev openssl-dev git perl build-base dpkg pandoc github-cli bash
+          rustup target add x86_64-unknown-linux-musl
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
       - uses: actions/checkout@v4
