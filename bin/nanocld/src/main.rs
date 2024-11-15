@@ -1,3 +1,6 @@
+/* Fix compilation error with ntex see (https://github.com/ntex-rs/ntex/issues/460) */
+#![recursion_limit = "256"]
+
 use clap::Parser;
 
 use nanocl_error::io::FromIo;
