@@ -139,6 +139,7 @@ pub async fn add_rule(
         }
         let data = STREAM_TEMPLATE.compile(&liquid::object!({
           "listen": listen,
+          "key": name,
           "upstream_key": upstream_key,
           "ssl": ssl,
         }))?;
