@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use of nanocld_client 0.16.1 with better ssl/tls handling
 - Dependencies update
 
+### Fixed
+
+- shared ssl_session_cache
+
 ## [0.13.0] - 2024-11-01
 
 ### Changed
