@@ -45,8 +45,8 @@ Maintainer: next-hat team@next-hat.com
 Description: A self-sufficient vms and containers orchestrator
 EOM
 
-mkdir -p ./target/debian
-mkdir -p ./target/linux
-dpkg-deb --build --root-owner-group "${release_path}" ./target/debian/${pkg_name}_"${version}"_"${pkg_arch}".deb
+mkdir -p ./release/debian
+mkdir -p ./release/linux
+dpkg-deb --build --root-owner-group "${release_path}" ./release/debian/${pkg_name}_"${version}"_"${pkg_arch}".deb
 rm -rf ${release_path}/DEBIAN
-tar -czvf ./target/linux/${pkg_name}_${version}_${pkg_arch}.tar.gz -C ${release_path}/usr $(ls ${release_path}/usr)
+tar -czvf ./release/${pkg_name}_${version}_linux_${pkg_arch}.tar.gz -C ${release_path}/usr .
