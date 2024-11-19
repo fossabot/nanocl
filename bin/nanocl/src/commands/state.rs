@@ -251,13 +251,7 @@ fn gen_client(
     api_version if state_ref.data.api_version.starts_with('v') => {
       NanocldClient::connect_to(&ConnectOpts {
         url: cli_conf.host.clone(),
-        ssl: cli_conf
-          .context
-          .endpoints
-          .get("Nanocl")
-          .expect("Nanocl endpoint is not defined")
-          .ssl
-          .clone(),
+        ssl: cli_conf.client.ssl.clone(),
         version: Some(api_version.clone()),
       })?
     }
