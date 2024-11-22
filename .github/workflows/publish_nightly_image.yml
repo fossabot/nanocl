@@ -78,6 +78,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
       - name: Create new draft release
         if: steps.release-exists.outcome == 'failure' && steps.release-exists.conclusion == 'success'
-        run: gh release create -t $BINARY_NAME-$VERSION-$CHANNEL -d $BINARY_NAME-$VERSION-$CHANNEL -F ./bin/$BINARY_NAME/changelog.md
+        run: gh release create -t $BINARY_NAME-$VERSION-$CHANNEL -d $BINARY_NAME-$VERSION-$CHANNEL -F ./bin/$BINARY_NAME/changelog.md --target ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
