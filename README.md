@@ -37,6 +37,7 @@ By empowering developers and DevOps professionals, Nanocl helps optimize workflo
 
 ## Latest news
 
+- [2024/11/24] [Automating deployment with GitHub Actions](https://docs.next-hat.com/blog/automating-deployment-with-github-actions-and-nanocl)
 - [2024/11/01] [End to End TLS encryption and first step for network meshing](https://docs.next-hat.com/blog/nanocl-0.16) (release)
 - [2024/06/11] [Man page, Backup, Remove Orphans and more](https://docs.next-hat.com/blog/nanocl-0.15) (release)
 - [2024/06/01] [We are invited to the Merge Berlin 2024](https://www.linkedin.com/feed/update/urn:li:activity:7201921660289998850) (event)
