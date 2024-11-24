@@ -242,3 +242,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Namespace network information
 - Upgrade ncproxy to 0.3
 - Upgrade nproxy to 1.23.4.0
+
