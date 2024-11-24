@@ -100,3 +100,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove an existing rule
 - Default config ignore resolv.conf and hosts
 - Entry IpAddress can target a namespace with a syntax like: `{namespace name}.nsp`
+
