@@ -237,3 +237,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Uninstall command
 - Upgrade command
 - Installer fetch template from our official repo or can take custom template path
+
