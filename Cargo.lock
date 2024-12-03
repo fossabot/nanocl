@@ -2325,9 +2325,9 @@ dependencies = [
 
 [[package]]
 name = "ntex"
-version = "2.8.0"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7b2a207ac0bec11a1cc6b44b2dcbcab3991b0482337f62a78c919bf13e1b4f2"
+checksum = "2d89f9d82fbcff4998af06815e18773fab96c85ec2b58efe8957f4e8562eb4b4"
 dependencies = [
  "base64",
  "bitflags 2.6.0",
@@ -2446,10 +2446,11 @@ dependencies = [
 
 [[package]]
 name = "ntex-http"
-version = "0.1.12"
+version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f81e205c980c693cb426f55669078bc311973f7e27a34f7ea4d0ce4069dedd05"
+checksum = "aa914d2065138de8d3439a6221259fa810c04ded06ddbcc7e46accc52f6365de"
 dependencies = [
+ "futures-core",
  "fxhash",
  "http",
  "itoa",
@@ -2519,9 +2520,9 @@ dependencies = [
 
 [[package]]
 name = "ntex-rt"
-version = "0.4.20"
+version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76f86c83f89053c29dcf5f1e9663c53726eea337a3221fa243e61e0410a40ad7"
+checksum = "733a898a4bf210dbf417bdee328f98feccdc40a183e4f8f4a08fff4bca352054"
 dependencies = [
  "async-channel 2.3.1",
  "async-std",
